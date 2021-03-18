@@ -9,6 +9,7 @@ def read_strategy_line(line):
     strategy = re.search('{(.+?)}', line).group(1)
     resources = strategy.split(',')
     resources = [int(i) for i in resources]
+    resources = list(map(int, resources))
     resources.sort(reverse=True)
     line = line[0:-2]
     number_of_usages = int(line.split(',')[-1])
@@ -16,8 +17,8 @@ def read_strategy_line(line):
     probability_numerator = int(probability_frac[0])
     probability_denomirator = int(probability_frac[1])
     probability = number_of_usages * probability_numerator/probability_denomirator
-    # print(resources)
-    # print(probability)
+    print(resources)
+    print(probability)
     return str(resources), probability
 
 def parse_file(path, filename):
