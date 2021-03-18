@@ -1,19 +1,11 @@
-from utils import payoff_matrix, pd_payoff_matrix, divides
+from utils import payoff_matrix, pd_payoff_matrix, divides, try_reading_symmetric_matrix
 import numpy as np
 import pandas as pd
 import time
 np.set_printoptions(suppress=True)
 
 def MWU_symmetric_game_algorithm(resources_number, fields_number, phi=1/2, steps_number=1000):
-    try:
-        path = "./data/payoff_matrices/payoff_matrix(" + str(resources_number) + \
-               "," + str(resources_number) + "," + str(fields_number) + ").csv"
-        payoff_mat = np.delete(pd.read_csv(path).to_numpy(), 0,1)
-    except:
-        print("Loaded failed")
-        payoff_mat = payoff_matrix(resources_number, resources_number, fields_number)
-    payoff_mat *= -1
-    # print(payoff_mat)
+    payoff_mat = np.delete(try_reading_symmetric_matrix(resources_number, fields_number).to_numpy(), 0,1)
     rows_number = payoff_mat.shape[0]
     cols_number = payoff_mat.shape[1]
 
@@ -37,14 +29,15 @@ def MWU_symmetric_game_algorithm(resources_number, fields_number, phi=1/2, steps
         p_t = np.multiply((1 - phi * m_t), p_t)
         p_t = p_t/p_t.sum()
         p_t_sum = p_t_sum + p_t
-    print(smallest_column_payoff) # lambda + epsilon
+    # print(smallest_column_payoff) # lambda + epsilon
     j_distribution = j_sumed/j_sumed.sum()
-    print(np.matmul(payoff_mat, j_distribution).min()) # lambda - epsilon
-    game_value = smallest_column_payoff + np.matmul(payoff_mat, j_distribution).min()
-    print(game_value)
+    # print(np.matmul(payoff_mat, j_distribution).min()) # lambda - epsilon
+    # game_value = smallest_column_payoff + np.matmul(payoff_mat, j_distribution).min()
+    # print(game_value)
     return p_best, j_distribution
 start_time = time.time()
-res = MWU_symmetric_game_algorithm(6,5,1/2,500000)
+res = MWU_symmetric_game_algorithm(6,5,1/2,5000)
 print("czas", time.time() - start_time)
 # print(np.matmul(payoff_matrix(6,6,5), res))
-# print(res[0].reshape(res[0].shape[1], res[0].shape[0]), "\n", "\n", res[1])
+print(res[0].reshape(res[0].shape[1], res[0].shape[0]), "\n", "\n", res[1])
+
