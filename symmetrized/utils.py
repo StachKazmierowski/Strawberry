@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from itertools import permutations
 
 def next_divide(divide):
@@ -77,3 +78,59 @@ def find_symetrized_pure_eq(x_b, set_A, set_B):
       B_eqs = np.append(B_eqs, x_b.reshape(1,n), axis=0)
       A_eqs = np.append(A_eqs, responses[i].reshape(1,n), axis=0)
   return B_eqs, A_eqs
+
+def payoff_matrix(A, B, n):
+  A_symmetrized_strategies = divides(A, n)
+  B_symmetrized_strategies = divides(B, n)
+  matrix = np.zeros((A_symmetrized_strategies.shape[0], B_symmetrized_strategies.shape[0]))
+  for i in range(A_symmetrized_strategies.shape[0]):
+    for j in range (B_symmetrized_strategies.shape[0]):
+      matrix[i,j] = symmetrized_pure_payoff_a(A_symmetrized_strategies[i], B_symmetrized_strategies[j])
+  return matrix
+
+def pd_payoff_matrix(A, B, n):
+  A_symmetrized_strategies = divides(A, n)
+  B_symmetrized_strategies = divides(B, n)
+  matrix = np.zeros((A_symmetrized_strategies.shape[0], B_symmetrized_strategies.shape[0]))
+  columns_names = []
+  rows_names = []
+  for i in range(A_symmetrized_strategies.shape[0]):
+    rows_names.append(str(A_symmetrized_strategies[i]))
+  for i in range(B_symmetrized_strategies.shape[0]):
+    columns_names.append(str(B_symmetrized_strategies[i]))
+  for i in range(A_symmetrized_strategies.shape[0]):
+    for j in range (B_symmetrized_strategies.shape[0]):
+      matrix[i,j] = symmetrized_pure_payoff_a(A_symmetrized_strategies[i], B_symmetrized_strategies[j])
+  df = pd.DataFrame(matrix, columns = columns_names, index=rows_names)
+  return df
+
+def isEqulibrium(strategy_A, strategy_B, payoff_mat): # TODO isEq
+    holder_A = 1*(strategy_A>0)
+    holder_b = 1*(strategy_B>0)
+
+def dominating_row(row_1, row_2):
+  for i in range(row_1.shape[0]):
+    if(row_2[i] > row_1[i]):
+      return False
+  return True
+
+def dominating_column(column_1, column_2):
+  for i in range(column_1.shape[0]):
+    if(column_1[i] > column_2[i]):
+      return False
+  return True
+
+def remove_dominated_startegies_row_player(df):
+  for i in range(df.shape[0]):
+    for j in range(i + 1, df.shape[0]):
+      # print(j)
+      if(dominating_row(df.iloc[i], df.iloc[j])):
+        df = df.drop(df.index[j])
+        # print(df)
+        return remove_dominated_startegies_row_player(df)
+  return df
+
+
+print(pd_payoff_matrix(6,6,5))
+# print(remove_dominated_startegies_row_player(payoff_matrix(6,6,5)))
+
