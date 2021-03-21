@@ -9,17 +9,11 @@ filename = 'tmp.txt'
 
 def eval_symmetric_solution(resource_number, fields_number, phi, steps_number):
     algoritmic_strategy = MWU_symmetric_game_algorithm(resource_number, fields_number, phi, steps_number)
-    # row_player_solution = algoritmic_strategy[0]
+    row_player_solution = algoritmic_strategy[0]
     column_player_strategy = algoritmic_strategy[1]
-    # print(column_player_strategy.shape)
     payoff_mat = try_reading_symmetric_matrix_numpy(resource_number, fields_number)
     row_strategy = chopstic_row_solution_to_vector(6,5,parse_file(path, filename))
-    # print(row_strategy)
-    print(np.matmul(np.matmul(row_strategy, payoff_mat), column_player_strategy))
-    return
-
-
-
+    return 0
 
 def chopstic_row_solution_to_vector(resource_number, fields_number, solution):
     matrix_pandas = try_reading_symmetric_matrix(resource_number, fields_number)
@@ -31,6 +25,23 @@ def chopstic_row_solution_to_vector(resource_number, fields_number, solution):
                 strategy[0,i] = solution.iloc[j][0]
     return strategy
 
-# chopstic_row_solution_to_vector(6,5,parse_file(path, filename))
-eval_symmetric_solution(6,5,1/2, 1000)
+def eval_strategy(payoff_matrix, row_solution, column_solution, algoritmic_strategy, game_value=0):
+    row_player_strategy = algoritmic_strategy[0]
+    column_player_strategy = algoritmic_strategy[1]
+    column_solution = column_solution.reshape(column_solution.shape[1], 1)
+    row_vector = np.matmul(row_player_strategy, payoff_matrix)
+    column_vector = np.matmul(payoff_matrix, column_player_strategy)
+    print(abs(game_value - np.multiply(row_vector.reshape(row_vector.shape[1], row_vector.shape[0]), column_solution>0)))
+    print(abs(game_value - np.multiply(row_solution > 0, column_vector.reshape(column_vector.shape[1], column_vector.shape[0]))))
+    column_biggest_error = np.max(abs(game_value - np.multiply(row_vector.reshape(row_vector.shape[1], row_vector.shape[0]), column_solution>0)))
+    row_biggest_error = np.max(abs(game_value - np.multiply(row_solution > 0, column_vector.reshape(column_vector.shape[1], column_vector.shape[0]))))
+    return max(column_biggest_error, row_biggest_error)
+
+# Mock data
+(resource_number, fields_number, phi, steps_number) = (6,5,1/4,1000)
+algoritmic_strategy = MWU_symmetric_game_algorithm(resource_number, fields_number, phi, steps_number)
+payoff_mat = try_reading_symmetric_matrix_numpy(resource_number, fields_number)
+# print(payoff_mat.shape)
+solution_A = chopstic_row_solution_to_vector(6,5,parse_file(path, filename))
+print(eval_strategy(payoff_mat, solution_A, solution_A, algoritmic_strategy))
 
