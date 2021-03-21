@@ -31,5 +31,5 @@ def parse_file(path, filename):
         out = pd.DataFrame(out[:,1], index=out[:,0]).sort_index(ascending=False)
         return out
 
-print(parse_file(path, filename))
+# print(parse_file(path, filename))
 

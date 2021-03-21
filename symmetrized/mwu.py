@@ -29,15 +29,12 @@ def MWU_symmetric_game_algorithm(resources_number, fields_number, phi=1/2, steps
         p_t = np.multiply((1 - phi * m_t), p_t)
         p_t = p_t/p_t.sum()
         p_t_sum = p_t_sum + p_t
-    # print(smallest_column_payoff) # lambda + epsilon
     j_distribution = j_sumed/j_sumed.sum()
-    # print(np.matmul(payoff_mat, j_distribution).min()) # lambda - epsilon
-    # game_value = smallest_column_payoff + np.matmul(payoff_mat, j_distribution).min()
-    # print(game_value)
     return p_best, j_distribution
-start_time = time.time()
-res = MWU_symmetric_game_algorithm(6,5,1/2,5000)
-print("czas", time.time() - start_time)
-# print(np.matmul(payoff_matrix(6,6,5), res))
-print(res[0].reshape(res[0].shape[1], res[0].shape[0]), "\n", "\n", res[1])
+
+# start_time = time.time()
+# res = MWU_symmetric_game_algorithm(6,5,1/2,5000)
+# print("czas", time.time() - start_time)
+# # print(np.matmul(payoff_matrix(6,6,5), res))
+# print(res[0].reshape(res[0].shape[1], res[0].shape[0]), "\n", "\n", res[1])
 

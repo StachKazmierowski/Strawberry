@@ -18,7 +18,6 @@ def eval_symmetric_solution(resource_number, fields_number, phi, steps_number):
 def chopstic_row_solution_to_vector(resource_number, fields_number, solution):
     matrix_pandas = try_reading_symmetric_matrix(resource_number, fields_number)
     strategy = np.zeros((1,matrix_pandas.shape[0]))
-    # print(matrix_pandas.index[3])
     for i in range (matrix_pandas.shape[0]):
         for j in range (solution.shape[0]):
             if(matrix_pandas.index[i] == solution.index[j]):
@@ -31,8 +30,6 @@ def eval_strategy(payoff_matrix, row_solution, column_solution, algoritmic_strat
     column_solution = column_solution.reshape(column_solution.shape[1], 1)
     row_vector = np.matmul(row_player_strategy, payoff_matrix)
     column_vector = np.matmul(payoff_matrix, column_player_strategy)
-    print(abs(game_value - np.multiply(row_vector.reshape(row_vector.shape[1], row_vector.shape[0]), column_solution>0)))
-    print(abs(game_value - np.multiply(row_solution > 0, column_vector.reshape(column_vector.shape[1], column_vector.shape[0]))))
     column_biggest_error = np.max(abs(game_value - np.multiply(row_vector.reshape(row_vector.shape[1], row_vector.shape[0]), column_solution>0)))
     row_biggest_error = np.max(abs(game_value - np.multiply(row_solution > 0, column_vector.reshape(column_vector.shape[1], column_vector.shape[0]))))
     return max(column_biggest_error, row_biggest_error)
@@ -43,5 +40,4 @@ algoritmic_strategy = MWU_symmetric_game_algorithm(resource_number, fields_numbe
 payoff_mat = try_reading_symmetric_matrix_numpy(resource_number, fields_number)
 # print(payoff_mat.shape)
 solution_A = chopstic_row_solution_to_vector(6,5,parse_file(path, filename))
-print(eval_strategy(payoff_mat, solution_A, solution_A, algoritmic_strategy))
 
