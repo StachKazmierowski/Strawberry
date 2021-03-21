@@ -1,5 +1,5 @@
 import unittest
-from utils import divides, next_divide, symmetrized_pure_payoff_a, payoff_matrix, pd_payoff_matrix
+from symmetrized.utils import divides, next_divide, symmetrized_pure_payoff_a, payoff_matrix, pd_payoff_matrix
 import numpy as np
 
 
