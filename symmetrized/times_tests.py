@@ -1,5 +1,5 @@
 import time
-from multiple_weights_update import STEPS_NUMBER, RANDOM_INIT,  \
+from mwu import STEPS_NUMBER, RANDOM_INIT,  \
     MWU_symmetric_game_algorithm, MWU_carrier_percent_size
 start_time = time.time()
 print(time.time() - start_time)
