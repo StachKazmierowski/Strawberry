@@ -1,4 +1,4 @@
-from utils import payoff_matrix, pd_payoff_matrix, divides,try_reading_symmetric_matrix_numpy
+from symmetrized.utils import payoff_matrix, pd_payoff_matrix, divides,try_reading_symmetric_matrix_numpy
 import numpy as np
 import pandas as pd
 import time

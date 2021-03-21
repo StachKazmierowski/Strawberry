@@ -146,7 +146,7 @@ def try_reading_symmetric_matrix_numpy(resources_number, fields_number):
 
 # print(pd_payoff_matrix(6,6,5))
 # print(remove_dominated_startegies_row_player(payoff_matrix(6,6,5)))
-# print(try_reading_symmetric_matrix_numpy(6,5))
+print(try_reading_symmetric_matrix_numpy(6,5))
 # np.delete(pd.read_csv(path).to_numpy(), 0,1)
-# print(divides(4,3).dtype)
+print(divides(4,3).dtype)
 

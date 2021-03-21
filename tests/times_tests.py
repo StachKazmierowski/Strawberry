@@ -1,6 +1,5 @@
 import time
-from multiple_weights_update import STEPS_NUMBER, RANDOM_INIT,  \
-    MWU_symmetric_game_algorithm, MWU_carrier_percent_size
+from symmetrized.mwu import MWU_symmetric_game_algorithm
 start_time = time.time()
 print(time.time() - start_time)
 
@@ -29,8 +28,8 @@ def run_sigle(fields, resources, phi, step_number, power):
     for i in range(len(fields)):
         for j in range(len(resources)):
             start_time = time.time()
-            tmp = MWU_carrier_percent_size(resources[j], fields[i], phi, step_number, small)
-            percent_size[j,i] = tmp
+            # tmp = MWU_carrier_percent_size(resources[j], fields[i], phi, step_number, small)
+            # percent_size[j,i] = tmp
             times[j,i] = time.time() - start_time
     df_times = pd.DataFrame(np.around(times, decimals=power), index=resources, columns=fields)
     df_percent_size = pd.DataFrame(np.around(percent_size, decimals=power),  index=resources, columns=fields)

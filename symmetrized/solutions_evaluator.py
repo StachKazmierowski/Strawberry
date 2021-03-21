@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
-from mwu import MWU_symmetric_game_algorithm
+from symmetrized.mwu import MWU_symmetric_game_algorithm
 from solutions_parser.chopstic_data_parser import parse_file
-from utils import try_reading_symmetric_matrix, try_reading_symmetric_matrix_numpy
+from symmetrized.utils import try_reading_symmetric_matrix, try_reading_symmetric_matrix_numpy
 
 path = './data/'
 filename = 'tmp.txt'
