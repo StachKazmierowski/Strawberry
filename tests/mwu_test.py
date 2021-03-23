@@ -6,10 +6,11 @@ import time
 import pandas as pd
 import numpy as np
 RES_PATH_TIMES = "./results/symmetric/times/"
-RES_PATH_ERRORS = "./results/symmetric/errors/"
+RES_PATH_ERRORS_COL = "./results/symmetric/errors_column/"
+RES_PATH_ERRORS_ROW = "./results/symmetric/errors_row/"
 SOLUTION_PATH = "./data/results4/"
 
-phis_bound = 21
+phis_bound = 11
 steps_number_bound = 7
 phis = [1/2**i for i in range(1, phis_bound)]
 phis_names = ["1/2^" + str(i) for i in range(1, phis_bound)]
@@ -23,22 +24,30 @@ def run_test(resources=6, fields=5):
     solution_A = chopstic_row_solution_to_vector(resources, fields, parse_file(solution_path, solution_file))
     solution_file = "optimal_strategy_" + str(name_part) + "_B.txt"
     solution_B = chopstic_row_solution_to_vector(resources, fields, parse_file(solution_path, solution_file))
-    errors = np.zeros((len(phis), len(steps_numbers)))
-    times = np.zeros((len(phis), len(steps_numbers)))
+    errors_row = np.zeros((len(phis), len(steps_numbers)))
+    errors_col = np.zeros((len(phis), len(steps_numbers)))
+    times = -np.ones((len(phis), len(steps_numbers)))
     for i in range(len(phis)):
         for j in range(len(steps_numbers)):
             start_time = time.time()
             error = eval_strategy(payoff_matrix, solution_A, solution_B,
                                          MWU_symmetric_game_algorithm(resources, fields, phis[i], steps_numbers[j]))
-            if(error == 0):
+            if(error[0] == 0 and error[1] == 0):
                 break
             else:
-                errors[i, j] =  error
+                errors_col[i, j] = error[0]
+                errors_row[i, j] = error[1]
                 times[i, j] = time.time() - start_time
+        if(i > 0 and (np.greater_equal(errors_row[i,:], errors_row[i-1,:])).all()
+                and (np.greater_equal(errors_col[i,:], errors_col[i-1,:])).all()):
+            # print(i)
+            break
     times = pd.DataFrame(times, index=phis_names, columns=steps_numbers)
-    errors = pd.DataFrame(errors, index=phis_names, columns=steps_numbers)
+    errors_row = pd.DataFrame(errors_row, index=phis_names, columns=steps_numbers)
+    errors_col = pd.DataFrame(errors_col, index=phis_names, columns=steps_numbers)
     times.to_csv(RES_PATH_TIMES + name_part + ".csv")
-    errors.to_csv(RES_PATH_ERRORS + name_part + ".csv")
+    errors_row.to_csv(RES_PATH_ERRORS_ROW + name_part + ".csv")
+    errors_col.to_csv(RES_PATH_ERRORS_COL + name_part + ".csv")
 
 for res in range(2,11):
     for fields in range(2,11):
