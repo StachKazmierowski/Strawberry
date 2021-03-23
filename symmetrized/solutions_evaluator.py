@@ -32,7 +32,7 @@ def eval_strategy(payoff_matrix, row_solution, column_solution, algoritmic_strat
     column_vector = np.matmul(payoff_matrix, column_player_strategy)
     column_biggest_error = np.max(abs(game_value - np.multiply(row_vector.reshape(row_vector.shape[1], row_vector.shape[0]), column_solution>0)))
     row_biggest_error = np.max(abs(game_value - np.multiply(row_solution > 0, column_vector.reshape(column_vector.shape[1], column_vector.shape[0]))))
-    return max(column_biggest_error, row_biggest_error)
+    return column_biggest_error, row_biggest_error
 
 # Mock data
 (resource_number, fields_number, phi, steps_number) = (6,5,1/4,1000)
