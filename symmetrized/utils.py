@@ -130,16 +130,6 @@ def remove_dominated_startegies_row_player(df):
         return remove_dominated_startegies_row_player(df)
   return df
 
-def try_reading_symmetric_matrix(resources_number, fields_number):
-    try:
-        path = "./data/payoff_matrices/payoff_matrix(" + str(resources_number) + \
-               "," + str(resources_number) + "," + str(fields_number) + ").csv"
-        payoff_mat = pd.read_csv(path, index_col=0)
-        payoff_mat *= -1
-    except:
-        print("Loaded failed")
-    return payoff_mat
-
 def try_reading_matrix(A, B, fields_number):
     try:
         path = "./data/payoff_matrices/payoff_matrix(" + str(A) + \
@@ -148,10 +138,6 @@ def try_reading_matrix(A, B, fields_number):
         payoff_mat *= -1
     except:
         print("Loaded failed")
-    return payoff_mat
-
-def try_reading_symmetric_matrix_numpy(resources_number, fields_number):
-    payoff_mat = try_reading_symmetric_matrix(resources_number, fields_number).to_numpy()
     return payoff_mat
 
 def try_reading_matrix_numpy(A ,B, fields_number):
@@ -164,7 +150,6 @@ def save_matrix_pd(A, B, n):
 
 # print(pd_payoff_matrix(6,6,5))
 # print(remove_dominated_startegies_row_player(payoff_matrix(6,6,5)))
-# print(try_reading_symmetric_matrix_numpy(6,5))
 # np.delete(pd.read_csv(path).to_numpy(), 0,1)
 # print(divides(4,3).dtype)
 

@@ -1,19 +1,11 @@
 import numpy as np
 import pandas as pd
-from symmetrized.mwu import MWU_symmetric_game_algorithm
+from symmetrized.mwu import MWU_game_algorithm
 from solutions_parser.chopstic_data_parser import parse_file
-from symmetrized.utils import try_reading_symmetric_matrix, try_reading_symmetric_matrix_numpy, divides
+from symmetrized.utils import try_reading_matrix_numpy, divides
 
 path = './data/'
 filename = 'tmp.txt'
-
-def eval_symmetric_solution(resource_number, fields_number, phi, steps_number):
-    algoritmic_strategy = MWU_symmetric_game_algorithm(resource_number, fields_number, phi, steps_number)
-    row_player_solution = algoritmic_strategy[0]
-    column_player_strategy = algoritmic_strategy[1]
-    payoff_mat = try_reading_symmetric_matrix_numpy(resource_number, fields_number)
-    row_strategy = chopstic_row_solution_to_vector(6,5,parse_file(path, filename))
-    return 0
 
 def chopstic_row_solution_to_vector(resource_number, fields_number, solution):
     pure_strategies = divides(resource_number, fields_number)
@@ -36,8 +28,7 @@ def eval_strategy(payoff_matrix, row_solution, column_solution, algoritmic_strat
 
 # Mock data
 # (resource_number, fields_number, phi, steps_number) = (6,5,1/4,1000)
-# algoritmic_strategy = MWU_symmetric_game_algorithm(resource_number, fields_number, phi, steps_number)
-# payoff_mat = try_reading_symmetric_matrix_numpy(resource_number, fields_number)
+# algoritmic_strategy = MWU_game_algorithm(resource_number, resource_number, fields_number, phi, steps_number)
 # # print(payoff_mat.shape)
 # solution_A = chopstic_row_solution_to_vector(6,5,parse_file(path, filename))
 # print(solution_A)

@@ -6,7 +6,6 @@ path = './data/'
 filename = 'tmp.txt'
 
 def read_strategy_line(line):
-    print(line)
     strategy = re.search('{(.+?)}', line).group(1)
     resources = strategy.split(',')
     resources = [float(i) for i in resources]

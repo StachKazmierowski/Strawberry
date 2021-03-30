@@ -1,18 +1,18 @@
 import time
-from symmetrized.mwu import MWU_symmetric_game_algorithm
+from symmetrized.mwu import MWU_game_algorithm
 start_time = time.time()
 print(time.time() - start_time)
 
 for i in range(2, 3):
     start_time = time.time()
     print("i", i)
-    print(MWU_symmetric_game_algorithm(i,i))
+    print(MWU_game_algorithm(i, i,i))
     print("czas", time.time() - start_time)
 
 
 #%%
 start_time = time.time()
-print(MWU_symmetric_game_algorithm(10,10, 1/10, 10))
+print(MWU_game_algorithm(10,10, 10, 1/10, 10))
 print("czas", time.time() - start_time)
 
 #%%
