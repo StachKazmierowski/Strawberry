@@ -1,0 +1,43 @@
+Initial floating-point solve . . .
+Simplifier removed 0 rows, 0 columns, 0 nonzeros, 13 col bounds, 0 row bounds
+Reduced LP has 11 rows 14 columns 146 nonzeros
+Equilibrium scaling LP
+
+type |   time |   iters | facts |    shift | viol sum | viol num | obj value 
+  L  |    0.0 |       0 |     1 | 0.00e+00 | 1.10e+01 |       11 | 1.00000000e+00
+  L  |    0.0 |       5 |     2 | 0.00e+00 | 0.00e+00 |        0 | 4.60869565e-01
+
+ --- unsimplifying solution and basis
+Floating-point optimal.
+Max. bound violation = 0.e0
+Max. row violation = 0.48572257327350598643533885478973e-16
+Max. reduced cost violation = 0.11102230246251565404236316680908e-15
+Max. dual violation = 0.e0
+Performing rational reconstruction . . .
+Tolerances reached.
+Solved to optimality.
+
+SoPlex status       : problem is solved [optimal]
+Solving time (sec)  : 0.00
+Iterations          : 5
+Objective value     : 4.60869565e-01
+
+Initial floating-point solve . . .
+Simplifier removed 14 rows, 3 columns, 38 nonzeros, 5 col bounds, 21 row bounds
+Reduced LP has 0 rows 0 columns 0 nonzeros
+Simplifier removed all rows and columns
+ --- unsimplifying solution and basis
+Floating-point optimal.
+Max. bound violation = 0.e0
+Max. row violation = 0.20816681711721685132943093776703e-16
+Max. reduced cost violation = 0.e0
+Max. dual violation = 0.e0
+Performing rational reconstruction . . .
+Tolerances reached.
+Solved to optimality.
+
+SoPlex status       : problem is solved [optimal]
+Solving time (sec)  : 0.00
+Iterations          : 0
+Objective value     : -4.60869565e-01
+
