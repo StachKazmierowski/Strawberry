@@ -41,6 +41,5 @@ def parse_game_value(path, filename):
         else:
             return int(values[0])/int(values[1])
 
-print(parse_game_value(path, filename))
 # print(parse_file(path, filename))
 

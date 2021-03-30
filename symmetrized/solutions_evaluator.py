@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from symmetrized.mwu import MWU_symmetric_game_algorithm
 from solutions_parser.chopstic_data_parser import parse_file
-from symmetrized.utils import try_reading_symmetric_matrix, try_reading_symmetric_matrix_numpy
+from symmetrized.utils import try_reading_symmetric_matrix, try_reading_symmetric_matrix_numpy, divides
 
 path = './data/'
 filename = 'tmp.txt'
@@ -16,20 +16,11 @@ def eval_symmetric_solution(resource_number, fields_number, phi, steps_number):
     return 0
 
 def chopstic_row_solution_to_vector(resource_number, fields_number, solution):
-    matrix_pandas = try_reading_symmetric_matrix(resource_number, fields_number)
-    strategy = np.zeros((1,matrix_pandas.shape[0]))
-    for i in range (matrix_pandas.shape[0]):
+    pure_strategies = divides(resource_number, fields_number)
+    strategy = np.zeros((1,pure_strategies.shape[0]))
+    for i in range (pure_strategies.shape[0]):
         for j in range (solution.shape[0]):
-            if(matrix_pandas.index[i] == solution.index[j]):
-                strategy[0,i] = solution.iloc[j][0]
-    return strategy
-
-def chopstic_row_solution_to_vector(resource_number, fields_number, solution):
-    matrix_pandas = try_reading_symmetric_matrix(resource_number, fields_number)
-    strategy = np.zeros((1,matrix_pandas.shape[0]))
-    for i in range (matrix_pandas.shape[0]):
-        for j in range (solution.shape[0]):
-            if(matrix_pandas.index[i] == solution.index[j]):
+            if(str(pure_strategies[i]) == solution.index[j]):
                 strategy[0,i] = solution.iloc[j][0]
     return strategy
 
@@ -49,4 +40,4 @@ def eval_strategy(payoff_matrix, row_solution, column_solution, algoritmic_strat
 # payoff_mat = try_reading_symmetric_matrix_numpy(resource_number, fields_number)
 # # print(payoff_mat.shape)
 # solution_A = chopstic_row_solution_to_vector(6,5,parse_file(path, filename))
-
+# print(solution_A)
