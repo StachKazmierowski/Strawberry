@@ -6,6 +6,7 @@ path = './data/'
 filename = 'tmp.txt'
 
 def read_strategy_line(line):
+    print(line)
     strategy = re.search('{(.+?)}', line).group(1)
     resources = strategy.split(',')
     resources = [float(i) for i in resources]
@@ -31,5 +32,15 @@ def parse_file(path, filename):
         out = pd.DataFrame(out[:,1], index=out[:,0]).sort_index(ascending=False)
         return out
 
+def parse_game_value(path, filename):
+    with open (path + filename, "r") as myfile:
+        line = myfile.readlines()[0]
+        values = line.split("/")
+        if(len(values) == 1):
+            return float(values[0])
+        else:
+            return int(values[0])/int(values[1])
+
+print(parse_game_value(path, filename))
 # print(parse_file(path, filename))
 

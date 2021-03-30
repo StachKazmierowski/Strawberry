@@ -140,9 +140,27 @@ def try_reading_symmetric_matrix(resources_number, fields_number):
         print("Loaded failed")
     return payoff_mat
 
+def try_reading_matrix(A, B, fields_number):
+    try:
+        path = "./data/payoff_matrices/payoff_matrix(" + str(A) + \
+               "," + str(B) + "," + str(fields_number) + ").csv"
+        payoff_mat = pd.read_csv(path, index_col=0)
+        payoff_mat *= -1
+    except:
+        print("Loaded failed")
+    return payoff_mat
+
 def try_reading_symmetric_matrix_numpy(resources_number, fields_number):
     payoff_mat = try_reading_symmetric_matrix(resources_number, fields_number).to_numpy()
     return payoff_mat
+
+def try_reading_matrix_numpy(A ,B, fields_number):
+    payoff_mat = try_reading_matrix(A, B, fields_number).to_numpy()
+    return payoff_mat
+
+def save_matrix_pd(A, B, n):
+    df = pd_payoff_matrix(A, B, n)
+    df.to_csv("./data/payoff_matrices/payoff_matrix(" + str(A) + "," + str(B) + "," + str(n) + ").csv")
 
 # print(pd_payoff_matrix(6,6,5))
 # print(remove_dominated_startegies_row_player(payoff_matrix(6,6,5)))
