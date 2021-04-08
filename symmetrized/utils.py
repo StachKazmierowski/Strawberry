@@ -147,9 +147,11 @@ def try_reading_matrix_numpy(A ,B, fields_number):
 def save_matrix_pd(A, B, n):
     df = pd_payoff_matrix(A, B, n)
     df.to_csv("./data/payoff_matrices/payoff_matrix(" + str(A) + "," + str(B) + "," + str(n) + ").csv")
+    (-df.transpose()).to_csv("./data/payoff_matrices/payoff_matrix(" + str(B) + "," + str(A) + "," + str(n) + ").csv")
 
 # print(pd_payoff_matrix(6,6,5))
 # print(remove_dominated_startegies_row_player(payoff_matrix(6,6,5)))
 # np.delete(pd.read_csv(path).to_numpy(), 0,1)
 # print(divides(4,3).dtype)
+# save_matrix_pd(4,3,2)
 
