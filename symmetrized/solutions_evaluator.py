@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from symmetrized.mwu import MWU_game_algorithm
 from solutions_parser.chopstic_data_parser import parse_file
-from symmetrized.utils import try_reading_matrix_numpy, divides
+from symmetrized.utils import try_reading_matrix_numpy, divides, payoff_matrix
 
 path = './data/'
 filename = 'tmp.txt'
@@ -42,9 +42,22 @@ def find_marginal_distribution(resource_number, fields_number, strategy):
                 res[int(pure_strategy[j])] += strategy[i,0]/fields_number
     return res
 
-mock_strategy = MWU_game_algorithm(9,9,3,1/16,100000)[1]
-print(mock_strategy)
-print(find_marginal_distribution(9,3,mock_strategy))
+def possible_payoff_increase_B(strategy_A, strategy_B, payoff_mat):
+    max_B_payoff = np.matmul(strategy_A, -payoff_mat).max()
+    curr_B_payoff = np.matmul(np.matmul(strategy_A, -payoff_mat), strategy_B)[0,0]
+    return max_B_payoff - curr_B_payoff
+
+def epsilon_value(strategy_A, strategy_B, payoff_mat):
+    epsilon_B = possible_payoff_increase_B(strategy_A, strategy_B, payoff_mat)
+    epsilon_A = possible_payoff_increase_B(strategy_B.transpose(), strategy_A.transpose(), -payoff_mat.transpose())
+    return max(epsilon_A, epsilon_B)
+
+mock_strategy_A, mock_strategy_B = MWU_game_algorithm(4,4,3,1/16,1000)[1].transpose(), MWU_game_algorithm(4,4,3,1/16,10000)[1]
+payoff_mat = payoff_matrix(4,4,3)
+# print(possible_payoff_increase_B(mock_strategy_A, mock_strategy_B, payoff_mat))
+print(epsilon_value(mock_strategy_A, mock_strategy_B, payoff_mat))
+# print(mock_strategy)
+# print(find_marginal_distribution(9,3,mock_strategy))
 # Mock data
 # (resource_number, fields_number, phi, steps_number) = (6,5,1/4,1000)
 # algoritmic_strategy = MWU_game_algorithm(resource_number, resource_number, fields_number, phi, steps_number)
