@@ -1,12 +1,12 @@
 from symmetrized.utils import payoff_matrix, pd_payoff_matrix, divides\
-    , try_reading_matrix_numpy
+    , try_reading_matrix_numpy, get_matrix_numpy
 import numpy as np
 import pandas as pd
 import time
 np.set_printoptions(suppress=True)
 
 def MWU_game_algorithm(A, B, fields_number, phi=1/2, steps_number=1000):
-    payoff_mat = try_reading_matrix_numpy(A, B, fields_number)
+    payoff_mat = get_matrix_numpy(A, B, fields_number)
     rows_number = payoff_mat.shape[0]
     cols_number = payoff_mat.shape[1]
 

@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from itertools import permutations
+import os.path
 
 def next_divide(divide):
     n = divide.shape[1]
@@ -144,6 +145,18 @@ def try_reading_matrix(A, B, fields_number):
 def try_reading_matrix_numpy(A ,B, fields_number):
     payoff_mat = try_reading_matrix(A, B, fields_number).to_numpy()
     return payoff_mat
+
+def get_matrix_numpy(A, B, fields_number):
+    filepath_1 = "./data/payoff_matrices/payoff_matrix(" + str(A) + \
+           "," + str(B) + "," + str(fields_number) + ").csv"
+    filepath_2 = "./data/payoff_matrices/payoff_matrix(" + str(B) + \
+           "," + str(A) + "," + str(fields_number) + ").csv"
+    if(os.path.exists(filepath_1)):
+        return try_reading_matrix_numpy(A, B, fields_number)
+    if(os.path.exists(filepath_2)):
+        return - try_reading_matrix_numpy(B, A, fields_number).transpose()
+    else:
+        return payoff_matrix(A, B, fields_number)
 
 def save_matrix_pd(A, B, n):
     df = pd_payoff_matrix(A, B, n)
