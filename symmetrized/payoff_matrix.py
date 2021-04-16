@@ -20,7 +20,7 @@ def single_payoff_matrix(strategy_A, strategy_B):
             matrix[i,j] = reversed_strategy_B[j] - strategy_A[i]
     matrix = np.sign(matrix)
     pd_matrix = pd.DataFrame(matrix, columns=reversed_strategy_B.tolist(), index=strategy_A.tolist())
-    print(pd_matrix)
+    # print(pd_matrix)
     return matrix
 
 def single_payoff_matrix_vectors(strategy_A, strategy_B):
@@ -28,12 +28,13 @@ def single_payoff_matrix_vectors(strategy_A, strategy_B):
     W = []
     T = []
     fields_num = matrix.shape[0]
+    # print(matrix)
     for i in range(fields_num):
         tmp_w = 0
         tmp_t = 0
-        while(matrix[fields_num - 1 - tmp_w, i] == 1):
+        while(tmp_w < fields_num and matrix[fields_num - 1 - tmp_w, i] == 1):
             tmp_w += 1
-        while(matrix[fields_num - 1 - tmp_t - tmp_w, i] == 0):
+        while(tmp_w + tmp_t < fields_num and matrix[fields_num - 1 - tmp_t - tmp_w, i] == 0):
             tmp_t += 1
         W.append(tmp_w)
         T.append(tmp_t + tmp_w)
@@ -66,6 +67,27 @@ def payoff(strategy_A, strategy_B):
     assert -(winning_A - winning_B) / fields_number_fac == symmetrized_pure_payoff_a(strategy_A, strategy_B)
     return -(winning_A - winning_B) / fields_number_fac
 
+def permutations_results(strategy_A, strategy_B):
+    matrix = single_payoff_matrix(strategy_A, strategy_B)
+    res = np.zeros((strategy_A.shape[0], strategy_B.shape[0]))
+    fields_number = matrix.shape[0]
+    perm = list(range(fields_number))
+    perm = list(set(permutations(perm)))
+    fields_number_fac = len(perm)
+    k_W = 0
+    k_L = 0
+    for i in range(len(perm)):
+        for j in range(len(perm[i])):
+            if(matrix[j, perm[i][j]] == 1):
+                k_W += 1
+            if(matrix[j, perm[i][j]] == -1):
+                k_L += 1
+        res[k_W, k_L] += 1
+        k_W = 0
+        k_L = 0
+    return res
+print(permutations_results(np.array([1,2,3,4]), np.array([1,2,3,4])).sum())
+
 # print(payoff(strategy_one, strategy_two))
 
 #%%
@@ -83,21 +105,26 @@ def factorial(n):
         return math.factorial(n)
 
 def single_type_rectangle(cols_num, rows_num, rooks_num):
+    # if(cols_num == 0 or rows_num == 0):
+    #     print("ZERO in shape of single rectangle")
+    #     return 0    TODO dawało błędy jak było odifowane - chyba powinno być gdzieś wcześniej ogarnięte
     if(rooks_num > cols_num or rooks_num > rows_num):
         return 0
     if(rooks_num == 0):
         return 1
     return newton_symbol(rows_num, rooks_num) * newton_symbol(cols_num, rooks_num) * factorial(rooks_num)
 
-def max_rook_num(W):
-    if(len(W) == 0 or np.max(W) <= 0):
+def max_rook_num(W): ## TODO zajebiśćie zrobić tą funkcje bo tu wychodzi większość problemów
+    W = np.delete(W, W <= 0)
+    if(len(W) == 0):
         return 0
     if(len(W) == 1):
         return 1
-    multiple_max = (np.argmax(W) == np.argmax(np.delete(W, np.argmax(W))))
-    return 1 + max_rook_num(np.delete(W, np.argmax(W)) - multiple_max)
-# print(max_rook_num(np.array([1,3,3])))
-
+    return 1 + max_rook_num(W - 1)
+print(max_rook_num(np.array([1,3,3])))
+# A = np.array([-1,-2,3,4,0])
+# print(np.delete(A, A <= 0))
+#%%
 def L_vector(W, T, fields_num):
     return - T + fields_num
 
@@ -133,21 +160,21 @@ def what_single_type(W, T, j):
     return -1
 
 def H_0(i, j, m, k_W, k_L, flag):
-    print("Wywołanie H_0")
-    print(flag)
+    # print("Wywołanie H_0")
+    # print(flag)
     if(m > j or m > i):
-        print("H_0, przypadek 1")
+        # print("H_0, przypadek 1")
         return 0
     if(k_W + k_L > m):
-        print("H_0, przypadek 2")
+        # print("H_0, przypadek 2")
         return 0
     if(flag == 1):
         if(k_L > 0):
             return 0
         if(m != k_W):
             return 0
-        print("H_0 zwraca liczbę")
-        print(k_W, m)
+        # print("H_0 zwraca liczbę")
+        # print(k_W, m)
         return single_type_rectangle(i, j, m)
     if(flag == 0):
         if(k_L > 0):
@@ -164,58 +191,64 @@ def H_0(i, j, m, k_W, k_L, flag):
 
 
 def H(i, j, m, k_W, k_L, W, T):
-    print("Wywołanie H")
+    # print("Wywołanie H")
     if(is_single_type(W, T, j)):
-        print("PRZYPADEK 1")
-        print("ZWRACAM 0")
+        # print("PRZYPADEK 1")
+        # print("ZWRACAM 0")
         return H_0(i, j, m, k_W, k_L, what_single_type(W, T, j))
     if(m > j or m > i):
-        print("PRZYPADEK 2")
-        print("ZWRACAM 0")
+        # print("PRZYPADEK 2")
+        # print("ZWRACAM 0")
         return 0
     if(k_W + k_L > m):
-        print("PRZYPADEK 3")
-        print("ZWRACAM 0")
+        # print("PRZYPADEK 3")
+        # print("ZWRACAM 0")
         return 0
     if(max_rook_num(W) < k_W):
-        print("PRZYPADEK 4")
-        print("ZWRACAM 0")
+        # print("PRZYPADEK 4")
+        # print("ZWRACAM 0")
         return 0
     if(max_rook_num(L_vector(W, T, j)) < k_L):
-        print("PRZYPADEK 5")
-        print("ZWRACAM 0")
+        # print("PRZYPADEK 5")
+        # print("ZWRACAM 0")
+        # print(L_vector(W, T, j))
         return 0
     if(W[-1] == j): ## corner is in W
-        print("PRZYPADEK 6")
+        # print("PRZYPADEK 6")
         width = width_to_remove(W)
         maximum_rooks_in_right = max(width, j)
         sum = 0
-        print("width:", width)
+        # print("width:", width)
         for r in range(min(maximum_rooks_in_right, m, k_W) + 1):
             # print(r)
             sum += H(i - width, j, m - r, k_W - r, k_L, W[:-width], T[:-width]) * single_type_rectangle(width, j - (m - r), r)
-        print("ZWRACAM SUMĘ", sum)
+        # print("ZWRACAM SUMĘ", sum)
         return sum
     if(T[-1] < j): ## corner is in L
-        print("PRZYPADEK 7")
+        # print("PRZYPADEK 7")
         height = j - T[-1]
         maximum_rooks_in_top = max(i, height)
         sum = 0
-        print("height:", height)
+        # print("height:", height)
         for r in range(min(maximum_rooks_in_top, m, k_L) + 1):
             sum += H(i, j - height, m - r, k_W, k_L - r, W , T) * single_type_rectangle(i - (m - r), height, r)
-        print("ZWRACAM SUMĘ", sum)
+        # print("ZWRACAM SUMĘ", sum)
         return sum
     if(T[-1] == j):
-        print("PRZYPADEK 8")
+        # print("PRZYPADEK 8")
         width = width_to_remove(T)
         height = T[-1] - W[-1]
         sum = 0
-        print("WESZLIŚMY W REMISY")
+        # print("WESZLIŚMY W REMISY")
 
     # trzy opcje, róg jest w W, L lub T
 
-print(H(4, 4, 4, 2, 1, np.array([1,1,1,4]), np.array([1,1,1,4])))
+# print(H(4, 4, 4, 2, 1, np.array([1,1,1,4]), np.array([1,1,1,4])))
+print(H(5, 5, 5, 1, 4, np.array([1,1,4,4]), np.array([2,2,3,3])))
+# for i in range(6):
+#     for j in range(6):
+#         if(i + j == 5 or H(5, 5, 5, i, j, np.array([1,1,1,4,5]), np.array([1,1,1,4,5])) != 0):
+#             print("i", i, "j", j, "H", H(5, 5, 5, i, j, np.array([1,1,1,4,5]), np.array([1,1,1,4,5])))
 
 # print(width_to_remove(np.array([1,1,1,4])))
 # print(single_payoff_matrix(strategy_one, strategy_two))
