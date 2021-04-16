@@ -23,6 +23,26 @@ def single_payoff_matrix(strategy_A, strategy_B):
     print(pd_matrix)
     return matrix
 
+def single_payoff_matrix_vectors(strategy_A, strategy_B):
+    matrix = single_payoff_matrix(strategy_A, strategy_B)
+    W = []
+    T = []
+    fields_num = matrix.shape[0]
+    for i in range(fields_num):
+        tmp_w = 0
+        tmp_t = 0
+        while(matrix[fields_num - 1 - tmp_w, i] == 1):
+            tmp_w += 1
+        while(matrix[fields_num - 1 - tmp_t - tmp_w, i] == 0):
+            tmp_t += 1
+        W.append(tmp_w)
+        T.append(tmp_t)
+    W = np.array(W)
+    T = np.array(T)
+    return W, T
+
+print(single_payoff_matrix_vectors(strategy_one, strategy_two))
+
 def payoff(strategy_A, strategy_B):
     matrix = single_payoff_matrix(strategy_A, strategy_B)
     fields_number = matrix.shape[0]
@@ -46,30 +66,13 @@ def payoff(strategy_A, strategy_B):
     assert -(winning_A - winning_B) / fields_number_fac == symmetrized_pure_payoff_a(strategy_A, strategy_B)
     return -(winning_A - winning_B) / fields_number_fac
 
-print(payoff(strategy_one, strategy_two))
+# print(payoff(strategy_one, strategy_two))
 
 #%%
-strategy_one = np.array([5,3])
-strategy_two = np.array([4,4])
+# strategy_one = np.array([5,3])
+# strategy_two = np.array([4,4])
 
 # print(symmetrized_pure_payoff_a(strategy_one, strategy_two))
-
-## in how many ways can we fill (1, i)x(1, w_i) rectangle, in such way that exactly j rooks are in W = (w_1, w_2, ...,w_n)
-def prepare_F(matrix):
-    fields_number = matrix.shape[0]
-    W = list((matrix > 0).sum(axis=0))
-    M = [min(i+1, W[i]) for i in range(fields_number)]
-    print(W[0])
-    return W, M
-
-def run_F(matrix, j):
-    W, M = prepare_F(matrix)
-    print(W)
-    print(M)
-    fields_number = matrix.shape[0]
-    print((fields_number - W[-1]))
-    return math.factorial(fields_number - W[-1]) * F(fields_number, j, W, M)
-
 def newton_symbol(n,k):
     return scipy.special.comb(n , k, exact=True)
 
@@ -79,33 +82,33 @@ def factorial(n):
     else:
         return math.factorial(n)
 
-def F(i, j, W, M):
-    if(j > M[i-1]):
+def single_type_rectangle(rows_num, cols_num, rooks_num):
+    if(rooks_num > cols_num or rooks_num > rows_num):
         return 0
-    if(j == 0):
-        if(i == 0):
-            return 1
-        else:
-            return 0
-    if(i == 0):
-        if(j == 1):
-            return W[0]
-        else:
-            return 0
-    m_1 = M[i-2]
-    m_2 = M[i-1]
-    w_i = [W[i-1], W[i-2]]
-    print("Współczynniki")
-    first_coef = (newton_symbol((i-1) - m_1, m_2 - m_1) * newton_symbol(w_i[0] - w_i[-1], m_2 - m_1) * factorial(m_2 - m_1))
-    second_coef = factorial(m_2 - m_1 - 1) * newton_symbol((i - 1) - m_1, m_2 - m_1 - 1) * (
-        (w_i[-1] - m_1) * newton_symbol(w_i[0] - w_i[-1], m_2 - m_1 - 1) +
-        + (w_i[0] - w_i[-1]) * newton_symbol(w_i[0] - w_i[-1] - 1, m_2 - m_1 - 1)
-    )
-    return F(i-1, j, W, M) * first_coef + F(i-1, j-1, W, M) * second_coef
+    if(rooks_num == 0):
+        return 1
+    return newton_symbol(rows_num, rooks_num) * newton_symbol(cols_num, rooks_num) * factorial(rooks_num)
+
+def max_rook_num(W):
+    if(len(W) == 0 or np.max(W) <= 0):
+        return 0
+    return 1 + max_rook_num(np.delete(W, np.argmax(W)) - 1)
+
+def L_vector(W, T, fields_num):
+    return - W - T + fields_num
+
+def prepare_H(strategy_A, strategy_B):
+    W, T = single_payoff_matrix_vectors(strategy_A, strategy_B)
 
 
-# TODO CZEMU WYCHODZI LISTA???? HEHEHE
-print(run_F(single_payoff_matrix(strategy_one, strategy_two), 1))
-print(newton_symbol(0, 0))
-# print(math.factorial(-1))
+print(L_vector(single_payoff_matrix_vectors(strategy_one, strategy_two)[0],
+               single_payoff_matrix_vectors(strategy_one, strategy_two)[1], 6))
 
+# how many ways are the to put m rook in (i,j) chessboard with k_W in W and k_L in L, where W, T and L are described
+# by W and T
+def H(i, j, m, k_W, k_L, W, T):
+    return 0
+
+
+# print(single_payoff_matrix(strategy_one, strategy_two))
+# print(single_type_rectangle(5,5,4))
