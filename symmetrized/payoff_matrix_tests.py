@@ -27,6 +27,30 @@ def H_results(strategy_one, strategy_two):
             res[i,j] = H(fields_num, fields_num, fields_num, i, j, W, T)
     return res
 
+def H_diffs(strategy_one, strategy_two):
+    mat = H_results(strategy_one, strategy_two)
+    fields_num = strategy_one.shape[0]
+    wins = np.zeros((fields_num, 1))
+    loses = np.zeros((fields_num, 1))
+    ties = 0
+    for x in range (fields_num + 1):
+        wins_tmp = 0
+        loses_tmp = 0
+        for i in range(fields_num + 1):
+            for j in range(fields_num + 1):
+                if(x == 0 and i == j):
+                    ties += mat[i, j]
+                else:
+                    if(i - j == x):
+                        wins_tmp += mat[i, j]
+                    if(j - i == x):
+                        loses_tmp += mat[i, j]
+        if(x > 0):
+            wins[x-1, 0] = wins_tmp
+            loses[x-1, 0] = loses_tmp
+    return wins, loses, ties
+# print(H_diffs())
+#%%
 ## testowanie max_rook_num
 # def test_max_rook_num(startegy_one, strategy_two):
 
@@ -61,10 +85,11 @@ def test(ties, print_errors):
         for i in range(len(error_A)):
             print(error_A[i], error_B[i])
 
-test(True, False)
+# test(True, False)
 #%%
 A = np.array([5,4,2])
 B = np.array([4,3,3])
 print(permutations_results(A, B))
 print(H_results(A, B))
 # print(H(2,2,2,1,1,np.array([1,1]),np.array([1,1])))
+print(H_diffs(A, B))
