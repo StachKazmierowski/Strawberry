@@ -110,6 +110,8 @@ def max_rook_num(W): ## TODO zajebiśćie zrobić tą funkcje bo tu wychodzi wi�
         return 0
     if(len(W) == 1):
         return 1
+    if(np.all(W-1 > 0)):
+        W = np.delete(W, W.argmax())
     return 1 + max_rook_num(W - 1)
 
 def L_vector(W, T, fields_num):
