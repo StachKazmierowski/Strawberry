@@ -94,7 +94,7 @@ def factorial(n):
 
 def single_type_rectangle(cols_num, rows_num, rooks_num):
     if(cols_num < 0 or rows_num < 0 or rooks_num < 0):
-        print("UJEMNA WARTOŚĆ W PROSTOKĄCIE")
+        # print("UJEMNA WARTOŚĆ W PROSTOKĄCIE")
     #     print(cols_num, rows_num, rooks_num)
         return 0
         ### TODO błędy przy warunku if(cols_num==0) ret 0 - może być tak, że wyrzucamy z prostokąta wszystkie wiersze i nie możemy nic w nim umieścić
@@ -142,7 +142,7 @@ def is_single_type(W, T, j):
     return False
 
 def what_single_type(W, T, j):
-    print(W, T, j)
+    # print(W, T, j)
     if(W[-1] == j):
         return 1 ## type W
     if(T[-1] == j):
@@ -263,6 +263,8 @@ def H(i, j, m, k_W, k_L, W, T):
         return sum
         # print("WESZLIŚMY W REMISY")
 
+
+
     # trzy opcje, róg jest w W, L lub T
 #%%
 print(list(range(1,2)))
@@ -272,10 +274,5 @@ print(H(5, 5, 5, 1, 4, np.array([1,1,4,4]), np.array([2,2,3,3])))
 A = np.array([2,3,4])
 B = np.array([2,4,3])
 # print(min(A, B))
-def vector_min(A, k):
-    for i in range(A.shape[0]):
-        if(A[i] > k):
-            A[i] = k
-    return A
 
 print(vector_min(A, 3))
