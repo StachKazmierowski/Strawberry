@@ -39,8 +39,6 @@ def single_payoff_matrix_vectors(strategy_A, strategy_B):
     T = np.array(T)
     return W, T
 
-print(single_payoff_matrix_vectors(strategy_one, strategy_two))
-
 def payoff(strategy_A, strategy_B):
     matrix = single_payoff_matrix(strategy_A, strategy_B)
     fields_number = matrix.shape[0]
@@ -111,7 +109,7 @@ def max_rook_num(W): ## TODO zajebiśćie zrobić tą funkcje bo tu wychodzi wi�
     if(len(W) == 1):
         return 1
     if(np.all(W-1 > 0)):
-        W = np.delete(W, W.argmax())
+        W = np.delete(W, W.argmin())
     return 1 + max_rook_num(W - 1)
 
 def L_vector(W, T, fields_num):
@@ -129,9 +127,6 @@ def width_to_remove(W):
         else:
             break
     return width
-W = np.array([0,3,3])
-print(W[-2])
-print(width_to_remove(W))
 
 #%%
 def is_single_type(W, T, j):
@@ -165,14 +160,13 @@ def what_double_type(W, T, j):
         return 1
 
 def vector_min(A, k):
+    B = np.array(A)
     for i in range(A.shape[0]):
-        if(A[i] > k):
-            A[i] = k
-    return A
+        if(B[i] > k):
+            B[i] = k
+    return B
 
 def H_0(i, j, m, k_W, k_L, flag):
-    # print("H0")
-    # print(flag)
     if(flag == 1):
         if(k_L > 0):
             return 0
@@ -268,13 +262,3 @@ def H(i, j, m, k_W, k_L, W, T):
 
 
     # trzy opcje, róg jest w W, L lub T
-#%%
-print(list(range(1,2)))
-#%%
-print(H(5, 5, 5, 1, 4, np.array([1,1,4,4]), np.array([2,2,3,3])))
-#%%
-A = np.array([2,3,4])
-B = np.array([2,4,3])
-# print(min(A, B))
-
-print(vector_min(A, 3))
