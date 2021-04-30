@@ -87,9 +87,9 @@ def test(ties, print_errors):
 
 # test(True, False)
 #%%
-A = np.array([5,4,2])
-B = np.array([4,3,3])
-print(permutations_results(A, B))
-print(H_results(A, B))
-# print(H(2,2,2,1,1,np.array([1,1]),np.array([1,1])))
-print(H_diffs(A, B))
+# A = np.array([5,4,2])
+# B = np.array([4,3,3])
+# print(permutations_results(A, B))
+# print(H_results(A, B))
+# # print(H(2,2,2,1,1,np.array([1,1]),np.array([1,1])))
+# print(H_diffs(A, B))
