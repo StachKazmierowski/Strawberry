@@ -1,5 +1,4 @@
-from symmetrized.payoff_matrix import *
-from symmetrized.diff_array import *
+from src.payoff_matrix_finding.diff_array import *
 import numpy as np
 
 def find_knots(W, T):

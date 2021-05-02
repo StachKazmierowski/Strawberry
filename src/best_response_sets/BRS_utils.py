@@ -1,4 +1,4 @@
-from symmetrized.utils import divides, all_best_symmetrized_respone, all_best_symmetrized_respone_respone, np
+from src.symmetrized.utils import divides, all_best_symmetrized_respone, all_best_symmetrized_respone_respone, np
 
 
 def find_number_of_symetric_eq(A, n):

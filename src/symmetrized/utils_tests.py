@@ -1,12 +1,7 @@
 import unittest
-from symmetrized.utils import divides, next_divide, symmetrized_pure_payoff_a, payoff_matrix, pd_payoff_matrix
-import numpy as np
-
-
-
+from src.symmetrized.utils import divides, next_divide, symmetrized_pure_payoff_a, payoff_matrix, pd_payoff_matrix
 
 # TODO trzeba zrobić testy
-
 class MyTestCase(unittest.TestCase):
     def test_divides_generating(self):
         for i in range(2, 10):

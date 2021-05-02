@@ -1,4 +1,4 @@
-from symmetrized.utils import payoff_matrix, pd_payoff_matrix, divides\
+from src.symmetrized.utils import payoff_matrix, pd_payoff_matrix, divides\
     , try_reading_matrix_numpy, get_matrix_numpy
 import numpy as np
 import pandas as pd

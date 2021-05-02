@@ -1,6 +1,5 @@
-from symmetrized.payoff_matrix import permutations_results, single_payoff_matrix, \
-    single_payoff_matrix_vectors, max_rook_num, H
-from symmetrized.utils import symmetrized_pure_payoff_a, divides
+from src.payoff_matrix_finding.payoff_matrix import permutations_results, single_payoff_matrix_vectors, H
+from src.symmetrized.utils import divides
 import numpy as np
 
 def payoff_from_perms_result(strategy_one, strategy_two):
@@ -17,10 +16,7 @@ def payoff_from_perms_result(strategy_one, strategy_two):
 
 def H_results(strategy_one, strategy_two):
     fields_num = strategy_one.shape[0]
-    # print(fields_num)
     W, T = single_payoff_matrix_vectors(strategy_one, strategy_two)
-    # print(W, T)
-    # print(W)
     res = np.zeros((fields_num + 1, fields_num + 1))
     for i in range(fields_num + 1):
         for j in range(fields_num + 1):
@@ -49,16 +45,7 @@ def H_diffs(strategy_one, strategy_two):
             wins[x-1, 0] = wins_tmp
             loses[x-1, 0] = loses_tmp
     return wins, loses, ties
-# print(H_diffs())
 #%%
-## testowanie max_rook_num
-# def test_max_rook_num(startegy_one, strategy_two):
-
-
-
-# print(payoff_from_perms_result(A, B))
-# print(symmetrized_pure_payoff_a(A, B))
-#
 def test(ties, print_errors):
     A_divides = divides(15, 6)
     B_divides = divides(16, 6)

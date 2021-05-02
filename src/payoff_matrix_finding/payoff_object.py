@@ -1,10 +1,7 @@
-import numpy as np
-from symmetrized.payoff_matrix import *
-from symmetrized.payoff_matrix_tests import H_diffs
 import time
-from symmetrized.utils import symmetrized_pure_payoff_a, payoff_matrix
-from symmetrized.dynamic_payoff import *
-from symmetrized.diff_array import F_0, F_1
+from src.symmetrized.utils import  payoff_matrix
+from src.payoff_matrix_finding.dynamic_payoff import *
+from src.payoff_matrix_finding.diff_array import F_0, F_1
 
 class payoff_dynamic_finder:
     def __init__(self):
@@ -18,26 +15,21 @@ class payoff_dynamic_finder:
         self.knots = find_knots(self.W, self.T)
         self.m_constraints = find_m_constraints(self.knots, self.fields_number).astype(int)
         self.x_constraints = find_x_constraints(self.knots, self.fields_number).astype(int)
-        # self.x_contraints = np
+        # self.x_contraints = np  TODO zrobić ograniczenia na x
         self.x_min = np.min(self.x_constraints)
         self.x_max = np.max(self.x_constraints)
         self.x_range = int(np.max(self.x_constraints) - np.min(self.x_constraints))
         ## i, j, m, x order
         self.values = np.zeros((self.fields_number + 1, self.fields_number + 1, self.fields_number + 1, self.x_range + 1))
 
-
     def run_experiment(self):
         assert (self.knots.shape) == (self.m_constraints.shape) == (self.x_constraints.shape)
-        # print(self.W, self.T)
-        # print(self.knots)
         for knot_index in range(self.knots.shape[0]):
             for m in range(self.m_constraints[knot_index, 0], self.m_constraints[knot_index, 1] + 1):
                 for x in range(self.x_constraints[knot_index, 0], self.x_constraints[knot_index, 1] + 1):
                     i = self.knots[knot_index, 0]
                     j = self.knots[knot_index, 1]
-                    # print("seeking value for:", i, j , m, x)
                     self.values[i, j, m, x] = self.F(i, j, m, x)
-                    # print("Value: ", self.values[i, j, m, x])
 
     def F(self, i, j, m, x):
         if(i == 0 or j == 0):
@@ -69,7 +61,6 @@ class payoff_dynamic_finder:
                 F_tmp = self.values[i, j - height, m - r, x + r]
                 top = single_type_rectangle(i - (m - r), height, r)
                 sum += F_tmp * top
-                ## TODO czy nie powinniśmy zmniejszać W i T? done, bez zmian
             return sum
         # REMISY
         if(is_double_type_with_tie(W_tmp, T_tmp, j)):
@@ -91,20 +82,7 @@ class payoff_dynamic_finder:
                             corner = single_type_rectangle(width, height - r_3, r_2)
                             right = single_type_rectangle(width - r_2, j - height - r_4, r_1)
                             sum += F_tmp * top * corner * right
-                ## TODO czy nie powinniśmy zmniejszać W i T? done, bez zmian
             return sum
-    #
-    # def F_diffs(self):
-    #     fields_num = self.A.shape[0]
-    #     wins = np.zeros((fields_num, 1))
-    #     loses = np.zeros((fields_num, 1))
-    #     ties = self.values[fields_num, fields_num, fields_num, 0]
-    #     for x in range(self.x_constraints[-1, 0], self.x_constraints[-1, 1] + 1):
-    #         if(x < 0):
-    #             loses[x] = self.values[fields_num, fields_num, fields_num, x]
-    #         elif(x > 0):
-    #             wins[x - 1] = self.values[fields_num, fields_num, fields_num, x]
-    #     return wins, loses, ties
 
     def payoff(self):
         wins = self.values[-1, -1, -1, self.x_constraints[-1, 0] :].sum()
@@ -112,55 +90,45 @@ class payoff_dynamic_finder:
         ties = self.values[-1, -1, -1, 0]
         return (wins - loses) / ( wins + loses + ties)
 
-    def payoff_matrix(self, A_number, B_number, n):
+    def payoff_matrix(self, A_number, B_number, n): ## TODO dla symetrycznej gry wypełniamy tylko pół macieży
+        symmetric = (A_number == B_number)
         A_symmetrized_strategies = divides(A_number, n)
         B_symmetrized_strategies = divides(B_number, n)
         matrix = np.zeros((A_symmetrized_strategies.shape[0], B_symmetrized_strategies.shape[0]))
-        for i in range(A_symmetrized_strategies.shape[0]):
-            for j in range(B_symmetrized_strategies.shape[0]):
-                if(np.all(A_symmetrized_strategies[i] == B_symmetrized_strategies[j])):
-                    matrix[i, j] = 0
-                else:
+        if(symmetric):
+            for i in range(A_symmetrized_strategies.shape[0]):
+                for j in range(i):
                     self.reload(A_symmetrized_strategies[i], B_symmetrized_strategies[j])
                     self.run_experiment()
                     matrix[i, j] = self.payoff()
+                    matrix[j, i] = -matrix[i, j]
+        else:
+            for i in range(A_symmetrized_strategies.shape[0]):
+                for j in range(B_symmetrized_strategies.shape[0]):
+                    if(np.all(A_symmetrized_strategies[i] == B_symmetrized_strategies[j])):
+                        matrix[i, j] = 0
+                    else:
+                        self.reload(A_symmetrized_strategies[i], B_symmetrized_strategies[j])
+                        self.run_experiment()
+                        matrix[i, j] = self.payoff()
         return matrix
 
-# x_A = []
-# k = 6
-# for i in range(k):
-#     x_A.append(k - 1 -i)
-# print(x_A)
-# A = np.array(x_A)
-# B = np.array(x_A)
-# A = np.array([7, 6, 4, 3, 1, 0])
-# B = np.array([8, 6, 5, 4, 2, 0])
-finder = payoff_dynamic_finder()
-A = np.array([1,1,1])
-B = np.array([3,0,0])
-finder.reload(A, B)
-finder.run_experiment()
-# print(finder.F_diffs())
-# print("time:", time.time() - start)
-print(finder.payoff())
-print(symmetrized_pure_payoff_a(A, B))
-
 #%%
 finder = payoff_dynamic_finder()
-k = 3
-tmp_mat = finder.payoff_matrix(k, k, k)
-print(tmp_mat)
-print(payoff_matrix(3,3,3))
+for k in range(5):
+    tmp_mat = finder.payoff_matrix(k, k, k)
+    tmp_mat_2 = payoff_matrix(k ,k ,k)
+    assert np.all(tmp_mat == tmp_mat_2)
+print("Jest super!")
 #%%
 times = []
-for k in range(20):
+for k in range(12):
     start = time.time()
     tmp_mat = finder.payoff_matrix(k, k, k)
     times.append(time.time() - start)
     print("czas dla ", k, times[-1])
 print(times)
-# print("diff at positiuons: ", (tmp_mat != payoff_matrix(k, k, k)).sum())
-# print(tmp_mat != payoff_matrix(k, k, k))
-# print(tmp_mat)
 #%%
+for i in range(len(times) - 1):
+    print(times[i+1] / times[i])
 

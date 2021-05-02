@@ -1,6 +1,5 @@
 import numpy as np
-import pandas as pd
-from symmetrized.utils import divides, symmetrized_pure_payoff_a
+from src.symmetrized.utils import divides, symmetrized_pure_payoff_a
 from itertools import permutations
 import scipy.special
 import math
@@ -18,7 +17,6 @@ def single_payoff_matrix(strategy_A, strategy_B):
         for j in range(fields_number):
             matrix[i,j] = reversed_strategy_B[j] - strategy_A[i]
     matrix = np.sign(matrix)
-    # pd_matrix = pd.DataFrame(matrix, columns=reversed_strategy_B.tolist(), index=strategy_A.tolist())
     return matrix
 
 def single_payoff_matrix_vectors(strategy_A, strategy_B):
@@ -92,8 +90,6 @@ def factorial(n):
 
 def single_type_rectangle(cols_num, rows_num, rooks_num):
     if(cols_num < 0 or rows_num < 0 or rooks_num < 0):
-        # print("UJEMNA WARTOŚĆ W PROSTOKĄCIE")
-    #     print(cols_num, rows_num, rooks_num)
         return 0
         ### TODO błędy przy warunku if(cols_num==0) ret 0 - może być tak, że wyrzucamy z prostokąta wszystkie wiersze i nie możemy nic w nim umieścić
     if(rooks_num > cols_num or rooks_num > rows_num):
@@ -114,9 +110,6 @@ def max_rook_num(W): ## TODO zajebiśćie zrobić tą funkcje bo tu wychodzi wi�
 
 def L_vector(W, T, fields_num):
     return - T + fields_num
-
-def prepare_H(strategy_A, strategy_B):
-    W, T = single_payoff_matrix_vectors(strategy_A, strategy_B)
 
 def width_to_remove(W):
     width = 1
@@ -139,7 +132,6 @@ def is_single_type(W, T, j):
     return False
 
 def what_single_type(W, T, j):
-    # print(W, T, j)
     if(W[-1] == j):
         return 1 ## type W
     if(T[-1] == j):
@@ -257,8 +249,3 @@ def H(i, j, m, k_W, k_L, W, T):
                         sum += H_tmp * top * corner * right
             ## TODO czy nie powinniśmy zmniejszać W i T? done, bez zmian
         return sum
-        # print("WESZLIŚMY W REMISY")
-
-
-
-    # trzy opcje, róg jest w W, L lub T

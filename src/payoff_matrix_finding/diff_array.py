@@ -1,8 +1,4 @@
-import numpy as np
-from payoff_matrix.payoff_matrix import *
-from symmetrized.payoff_matrix_tests import H_diffs
-import time
-from symmetrized.utils import symmetrized_pure_payoff_a
+from src.payoff_matrix_finding.payoff_matrix import *
 
 def F_0(i, j, m, x, flag):
     # print("H0")

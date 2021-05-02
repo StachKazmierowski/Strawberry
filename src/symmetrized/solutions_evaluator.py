@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
-from symmetrized.mwu import MWU_game_algorithm
-from solutions_parser.chopstic_data_parser import parse_file
-from symmetrized.utils import try_reading_matrix_numpy, divides, payoff_matrix
+from src.symmetrized.mwu import MWU_game_algorithm
+from src.solutions_parser.chopstic_data_parser import parse_file
+from src.symmetrized.utils import try_reading_matrix_numpy, divides, payoff_matrix
 
 path = './data/'
 filename = 'tmp.txt'
