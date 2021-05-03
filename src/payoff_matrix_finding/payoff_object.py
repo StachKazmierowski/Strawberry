@@ -2,6 +2,7 @@ import time
 from src.symmetrized.utils import  payoff_matrix
 from src.payoff_matrix_finding.dynamic_payoff import *
 from src.payoff_matrix_finding.diff_array import F_0, F_1
+import concurrent.futures
 
 class payoff_dynamic_finder:
     def __init__(self):
@@ -84,51 +85,53 @@ class payoff_dynamic_finder:
                             sum += F_tmp * top * corner * right
             return sum
 
-    def payoff(self):
+    def payoff(self, iter):
+        i = iter[0]
+        j = iter[1]
+        A = self.A_symmetrized_strategies[i]
+        B = self.B_symmetrized_strategies[j]
+        self.reload(A,B)
+        self.run_experiment()
         wins = self.values[-1, -1, -1, self.x_constraints[-1, 0] :].sum()
         loses = self.values[-1, -1, -1, 1 : self.x_constraints[-1, 1] + 1].sum()
         ties = self.values[-1, -1, -1, 0]
-        return (wins - loses) / ( wins + loses + ties)
+        return i, j, (wins - loses) / ( wins + loses + ties)
 
     def payoff_matrix(self, A_number, B_number, n): ## TODO dla symetrycznej gry wypełniamy tylko pół macieży
         symmetric = (A_number == B_number)
-        A_symmetrized_strategies = divides(A_number, n)
-        B_symmetrized_strategies = divides(B_number, n)
-        matrix = np.zeros((A_symmetrized_strategies.shape[0], B_symmetrized_strategies.shape[0]))
+        self.A_symmetrized_strategies = divides(A_number, n)
+        self.B_symmetrized_strategies = divides(B_number, n)
+        matrix = np.zeros((self.A_symmetrized_strategies.shape[0], self.B_symmetrized_strategies.shape[0]))
         if(symmetric):
-            for i in range(A_symmetrized_strategies.shape[0]):
-                for j in range(i):
-                    self.reload(A_symmetrized_strategies[i], B_symmetrized_strategies[j])
-                    self.run_experiment()
-                    matrix[i, j] = self.payoff()
-                    matrix[j, i] = -matrix[i, j]
+            args = ((i,j) for i in range(self.A_symmetrized_strategies.shape[0]) for j in range(i))
+            with concurrent.futures.ProcessPoolExecutor(max_workers=None) as executor:
+                for i, j, val in executor.map(self.payoff, args):
+                    matrix[i, j] = val
+                    matrix[j, i] = -val
         else:
-            for i in range(A_symmetrized_strategies.shape[0]):
-                for j in range(B_symmetrized_strategies.shape[0]):
-                    if(np.all(A_symmetrized_strategies[i] == B_symmetrized_strategies[j])):
-                        matrix[i, j] = 0
-                    else:
-                        self.reload(A_symmetrized_strategies[i], B_symmetrized_strategies[j])
-                        self.run_experiment()
-                        matrix[i, j] = self.payoff()
+            args = ((i,j) for i in range(self.A_symmetrized_strategies.shape[0]) for j in range(self.B_symmetrized_strategies.shape[0]))
+            with concurrent.futures.ProcessPoolExecutor(max_workers=None) as executor:
+                for i, j, val in executor.map(self.payoff, args):
+                    matrix[i, j] = val
         return matrix
-
 #%%
 finder = payoff_dynamic_finder()
-for k in range(5):
-    tmp_mat = finder.payoff_matrix(k, k, k)
-    tmp_mat_2 = payoff_matrix(k ,k ,k)
-    assert np.all(tmp_mat == tmp_mat_2)
-print("Jest super!")
-#%%
+# for k in range(2, 5):
+#     tmp_mat = finder.payoff_matrix(k, k, k)
+#     # print(tmp_mat)
+#     tmp_mat_2 = payoff_matrix(k ,k ,k)
+#     assert np.all(tmp_mat == tmp_mat_2)
+# print("Jest super!")
+
 times = []
-for k in range(12):
+for k in range(1, 15):
     start = time.time()
-    tmp_mat = finder.payoff_matrix(k, k, k)
+    tmp_mat = finder.payoff_matrix(5 * k, 5 * k, 3)
     times.append(time.time() - start)
-    print("czas dla ", k, times[-1])
+    print("czas dla k = ", k, "to", times[-1])
+    print("rozmiar macieży to:", tmp_mat.shape)
+    print("średni czas obliczania komórki macieży:", times[-1] / (tmp_mat.shape[0]**2))
 print(times)
 #%%
 for i in range(len(times) - 1):
     print(times[i+1] / times[i])
-
