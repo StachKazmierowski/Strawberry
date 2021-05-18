@@ -1,5 +1,5 @@
 import numpy as np
-from src.symmetrized.utils import divides, symmetrized_pure_payoff_a
+from utils import divides, symmetrized_pure_payoff_a
 from itertools import permutations
 import scipy.special
 import math

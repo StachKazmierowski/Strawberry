@@ -1,4 +1,4 @@
-from src.payoff_matrix_finding.payoff_matrix import *
+from payoff_matrix import *
 
 def F_0(i, j, m, x, flag):
     # print("H0")

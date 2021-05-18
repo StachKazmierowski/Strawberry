@@ -1,7 +1,6 @@
 import time
-from src.symmetrized.utils import  payoff_matrix
-from src.payoff_matrix_finding.dynamic_payoff import *
-from src.payoff_matrix_finding.diff_array import F_0, F_1
+from dynamic_payoff import *
+from diff_array import F_0, F_1
 import concurrent.futures
 
 class payoff_dynamic_finder:
@@ -122,16 +121,15 @@ finder = payoff_dynamic_finder()
 #     tmp_mat_2 = payoff_matrix(k ,k ,k)
 #     assert np.all(tmp_mat == tmp_mat_2)
 # print("Jest super!")
-
-times = []
-for k in range(1, 15):
-    start = time.time()
-    tmp_mat = finder.payoff_matrix(5 * k, 5 * k, 3)
-    times.append(time.time() - start)
-    print("czas dla k = ", k, "to", times[-1])
-    print("rozmiar macieży to:", tmp_mat.shape)
-    print("średni czas obliczania komórki macieży:", times[-1] / (tmp_mat.shape[0]**2))
-print(times)
-#%%
-for i in range(len(times) - 1):
-    print(times[i+1] / times[i])
+if __name__ == '__main__':
+    times = []
+    for k in range(1, 15):
+        start = time.time()
+        tmp_mat = finder.payoff_matrix(5 * k, 5 * k, 3)
+        times.append(time.time() - start)
+        print("czas dla k = ", k, "to", times[-1])
+        print("rozmiar macieży to:", tmp_mat.shape)
+        print("średni czas obliczania komórki macieży:", times[-1] / (tmp_mat.shape[0]**2))
+    print(times)
+    for i in range(len(times) - 1):
+        print(times[i+1] / times[i])
