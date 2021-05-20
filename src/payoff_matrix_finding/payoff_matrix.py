@@ -1,5 +1,7 @@
 import numpy as np
-from utils import divides, symmetrized_pure_payoff_a
+import pandas as pd
+
+from src.symmetrized.utils import divides, symmetrized_pure_payoff_a
 from itertools import permutations
 import scipy.special
 import math
@@ -18,6 +20,9 @@ def single_payoff_matrix(strategy_A, strategy_B):
             matrix[i,j] = reversed_strategy_B[j] - strategy_A[i]
     matrix = np.sign(matrix)
     return matrix
+
+
+#%%
 
 def single_payoff_matrix_vectors(strategy_A, strategy_B):
     matrix = single_payoff_matrix(strategy_A, strategy_B)

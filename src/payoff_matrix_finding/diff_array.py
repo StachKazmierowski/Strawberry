@@ -1,4 +1,6 @@
-from payoff_matrix import *
+from src.payoff_matrix_finding.payoff_matrix import single_type_rectangle, width_to_remove, max_rook_num, L_vector, \
+    is_single_type, what_single_type, vector_min, is_double_type_with_tie, single_payoff_matrix_vectors, what_double_type
+import numpy as np
 
 def F_0(i, j, m, x, flag):
     # print("H0")
@@ -104,39 +106,3 @@ def F_diffs(strategy_one, strategy_two):
     # print(factorial(fields_num))
     # assert np.sum(wins) + np.sum(loses) + ties == factorial(fields_num)
     return wins, loses, ties
-
-# x_A = []
-# k = 7
-# for i in range(k):
-#     x_A.append(k - 1 -i)
-# print(x_A)
-# A = np.array(x_A)
-# B = np.array(x_A)
-# # print(x_B)
-# # #%%
-# # A = divides(30, 20)[3]
-# # B = divides(30, 20)[3]
-# print(A)
-# print(B)
-# W, T = single_payoff_matrix_vectors(A, B)
-# start = time.time()
-# H_res = H_diffs(A, B)
-# time_H = time.time() - start
-# F_res = F_diffs(A, B)
-# time_F = time.time() - time_H - start
-# # A = symmetrized_pure_payoff_a(A, B)
-# # time_pure = time.time() - start - time_F - time_H
-# # print(H_res[0] - F_res[0])
-# # print(H_res[1] - F_res[1])
-# print(F_res)
-# print(H_res)
-# # print("time P", time_pure)
-# print("time H", time_H)
-# print("time F", time_F)
-
-# assert(np.sum(H_res[0]) == np.sum(F_res[0]) and np.sum(H_res[1]) == np.sum(F_res[1]) and H_res[2] == F_res[2])
-
-#%%
-# print(divides(20, 50).shape)
-#%%
-# print(0.095801 * 627 * 627 / (3600 * 24))

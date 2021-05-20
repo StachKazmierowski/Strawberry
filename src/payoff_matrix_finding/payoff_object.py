@@ -1,7 +1,12 @@
 import time
-from dynamic_payoff import *
-from diff_array import F_0, F_1
+from src.payoff_matrix_finding.dynamic_payoff import find_m_constraints, find_knots, find_x_constraints
+from src.payoff_matrix_finding.payoff_matrix import single_payoff_matrix_vectors, vector_min, max_rook_num, L_vector, \
+    is_single_type, what_single_type, single_type_rectangle, width_to_remove, is_double_type_with_tie, what_double_type
+from src.payoff_matrix_finding.diff_array import F_0, F_1
 import concurrent.futures
+from src.symmetrized.utils import divides
+import numpy as np
+import pandas as pd
 
 class payoff_dynamic_finder:
     def __init__(self):
@@ -113,7 +118,27 @@ class payoff_dynamic_finder:
                 for i, j, val in executor.map(self.payoff, args):
                     matrix[i, j] = val
         return matrix
+
+    def pd_payoff_matrix(self, A, B, n):
+        A_symmetrized_strategies = divides(A, n)
+        B_symmetrized_strategies = divides(B, n)
+        matrix = self.payoff_matrix(A,B,n)
+        columns_names = []
+        rows_names = []
+        for i in range(A_symmetrized_strategies.shape[0]):
+            rows_names.append(str(A_symmetrized_strategies[i]))
+        for i in range(B_symmetrized_strategies.shape[0]):
+            columns_names.append(str(B_symmetrized_strategies[i]))
+        df = pd.DataFrame(matrix, columns=columns_names, index=rows_names)
+        return df
+
+
 #%%
+def save_matrix_pd(A, B, n, df):
+    df.to_csv("./data/payoff_matrices_dynamic/payoff_matrix(" + str(A) + "," + str(B) + "," + str(n) + ").csv")
+    if(A != B):
+        (-df.transpose()).to_csv("./data/payoff_matrices_dynamic/payoff_matrix(" + str(B) + "," + str(A) + "," + str(n) + ").csv")
+
 finder = payoff_dynamic_finder()
 # for k in range(2, 5):
 #     tmp_mat = finder.payoff_matrix(k, k, k)
@@ -123,13 +148,19 @@ finder = payoff_dynamic_finder()
 # print("Jest super!")
 if __name__ == '__main__':
     times = []
+    times_per_cell = []
     for k in range(1, 15):
         start = time.time()
-        tmp_mat = finder.payoff_matrix(5 * k, 5 * k, 3)
+        tmp_mat = finder.pd_payoff_matrix(k, k, k)
+        times.append(time.time() - start)
+        save_matrix_pd(k,k,k,tmp_mat)
+        print(tmp_mat)
         times.append(time.time() - start)
         print("czas dla k = ", k, "to", times[-1])
         print("rozmiar macieży to:", tmp_mat.shape)
         print("średni czas obliczania komórki macieży:", times[-1] / (tmp_mat.shape[0]**2))
+        times_per_cell.append(times[-1] / (tmp_mat.shape[0]**2))
+        
     print(times)
     for i in range(len(times) - 1):
         print(times[i+1] / times[i])
