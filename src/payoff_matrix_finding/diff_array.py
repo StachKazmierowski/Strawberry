@@ -1,4 +1,4 @@
-from src.payoff_matrix_finding.payoff_matrix import single_type_rectangle, width_to_remove, max_rook_num, L_vector, \
+from payoff_matrix import single_type_rectangle, width_to_remove, max_rook_num, L_vector, \
     is_single_type, what_single_type, vector_min, is_double_type_with_tie, single_payoff_matrix_vectors, what_double_type
 import numpy as np
 

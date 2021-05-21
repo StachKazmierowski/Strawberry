@@ -1,10 +1,10 @@
 import time
-from src.payoff_matrix_finding.dynamic_payoff import find_m_constraints, find_knots, find_x_constraints
-from src.payoff_matrix_finding.payoff_matrix import single_payoff_matrix_vectors, vector_min, max_rook_num, L_vector, \
+from dynamic_payoff import find_m_constraints, find_knots, find_x_constraints
+from payoff_matrix import single_payoff_matrix_vectors, vector_min, max_rook_num, L_vector, \
     is_single_type, what_single_type, single_type_rectangle, width_to_remove, is_double_type_with_tie, what_double_type
-from src.payoff_matrix_finding.diff_array import F_0, F_1
+from diff_array import F_0, F_1
 import concurrent.futures
-from src.symmetrized.utils import divides
+from utils import divides
 import numpy as np
 import pandas as pd
 
@@ -119,48 +119,59 @@ class payoff_dynamic_finder:
                     matrix[i, j] = val
         return matrix
 
-    def pd_payoff_matrix(self, A, B, n):
-        A_symmetrized_strategies = divides(A, n)
-        B_symmetrized_strategies = divides(B, n)
-        matrix = self.payoff_matrix(A,B,n)
-        columns_names = []
-        rows_names = []
-        for i in range(A_symmetrized_strategies.shape[0]):
-            rows_names.append(str(A_symmetrized_strategies[i]))
-        for i in range(B_symmetrized_strategies.shape[0]):
-            columns_names.append(str(B_symmetrized_strategies[i]))
-        df = pd.DataFrame(matrix, columns=columns_names, index=rows_names)
-        return df
-
 
 #%%
+def pd_payoff_matrix(matrix, A, B, n):
+    A_symmetrized_strategies = divides(A, n)
+    B_symmetrized_strategies = divides(B, n)
+    columns_names = []
+    rows_names = []
+    for i in range(A_symmetrized_strategies.shape[0]):
+        rows_names.append(str(A_symmetrized_strategies[i]))
+    for i in range(B_symmetrized_strategies.shape[0]):
+        columns_names.append(str(B_symmetrized_strategies[i]))
+    df = pd.DataFrame(matrix, columns=columns_names, index=rows_names)
+    return df
+
 def save_matrix_pd(A, B, n, df):
-    df.to_csv("./data/payoff_matrices_dynamic/payoff_matrix(" + str(A) + "," + str(B) + "," + str(n) + ").csv")
+    df.to_csv("../../data/payoff_matrices_dynamic/payoff_matrix(" + str(A) + "," + str(B) + "," + str(n) + ").csv")
     if(A != B):
         (-df.transpose()).to_csv("./data/payoff_matrices_dynamic/payoff_matrix(" + str(B) + "," + str(A) + "," + str(n) + ").csv")
 
+
 finder = payoff_dynamic_finder()
-# for k in range(2, 5):
-#     tmp_mat = finder.payoff_matrix(k, k, k)
-#     # print(tmp_mat)
-#     tmp_mat_2 = payoff_matrix(k ,k ,k)
-#     assert np.all(tmp_mat == tmp_mat_2)
-# print("Jest super!")
+
+K_MIN = 1
+K_MAX = 5
+
+fields_MIN = 3
+fields_MAX = 5
+
+
+def save_times_pandas(times, name):
+    columns_names = []
+    rows_names = []
+    for i in range(K_MIN, K_MAX):
+        rows_names.append(i)
+    for i in range(fields_MIN, fields_MAX):
+        columns_names.append(i)
+    df = pd.DataFrame(times, columns=columns_names, index=rows_names)
+    df.to_csv("../../data/times/" + name + ".csv")
+
 if __name__ == '__main__':
-    times = []
-    times_per_cell = []
-    for k in range(1, 15):
-        start = time.time()
-        tmp_mat = finder.pd_payoff_matrix(k, k, k)
-        times.append(time.time() - start)
-        save_matrix_pd(k,k,k,tmp_mat)
-        print(tmp_mat)
-        times.append(time.time() - start)
-        print("czas dla k = ", k, "to", times[-1])
-        print("rozmiar macieży to:", tmp_mat.shape)
-        print("średni czas obliczania komórki macieży:", times[-1] / (tmp_mat.shape[0]**2))
-        times_per_cell.append(times[-1] / (tmp_mat.shape[0]**2))
-        
-    print(times)
-    for i in range(len(times) - 1):
-        print(times[i+1] / times[i])
+    times = np.zeros((K_MAX-K_MIN, fields_MAX-fields_MIN))
+    times_per_cell = np.zeros((K_MAX-K_MIN, fields_MAX-fields_MIN))
+    for k in range(K_MIN, K_MAX):
+        for fields in range(fields_MIN, fields_MAX):
+            start = time.time()
+            np_mat = finder.payoff_matrix(k * fields, k * fields, fields)
+            delta_time = time.time() - start
+            times[k - 1, fields - 3] = delta_time
+            times_per_cell[k - 1, fields - 3] = (delta_time / (np_mat.shape[0]**2))
+            pd_mat = pd_payoff_matrix(np_mat, k * fields, k * fields, fields)
+            save_matrix_pd(k * fields, k * fields, fields, pd_mat)
+            save_times_pandas(times, "time")
+            save_times_pandas(times_per_cell, "cell_time")
+    # for i in range(len(times) - 1):
+    #     print(times[i+1] / times[i])
+

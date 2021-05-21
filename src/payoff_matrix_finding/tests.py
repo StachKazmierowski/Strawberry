@@ -1,4 +1,4 @@
-from src.payoff_matrix_finding.payoff_matrix import permutations_results, single_payoff_matrix_vectors, H
+from payoff_matrix import permutations_results, single_payoff_matrix_vectors, H
 from src.symmetrized.utils import divides
 import numpy as np
 

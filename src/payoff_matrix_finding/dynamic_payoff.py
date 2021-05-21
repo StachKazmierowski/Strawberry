@@ -1,4 +1,4 @@
-from src.payoff_matrix_finding.diff_array import max_rook_num, L_vector
+from diff_array import max_rook_num, L_vector
 import numpy as np
 
 def find_knots(W, T):
