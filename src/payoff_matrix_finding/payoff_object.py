@@ -99,6 +99,8 @@ class payoff_dynamic_finder:
         wins = self.values[-1, -1, -1, self.x_constraints[-1, 0] :].sum()
         loses = self.values[-1, -1, -1, 1 : self.x_constraints[-1, 1] + 1].sum()
         ties = self.values[-1, -1, -1, 0]
+        if(wins+loses+ties == 0):
+            print(wins, loses, ties)
         return i, j, (wins - loses) / ( wins + loses + ties)
 
     def payoff_matrix(self, A_number, B_number, n): ## TODO dla symetrycznej gry wypełniamy tylko pół macieży
