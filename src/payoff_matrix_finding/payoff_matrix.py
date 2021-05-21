@@ -102,7 +102,7 @@ def single_type_rectangle(cols_num, rows_num, rooks_num):
         return 1
     return newton_symbol(rows_num, rooks_num) * newton_symbol(cols_num, rooks_num) * factorial(rooks_num)
 
-def max_rook_num(W): ## TODO zajebiśćie zrobić tą funkcje bo tu wychodzi większość problemów
+def max_rook_num_old(W): ## TODO zajebiśćie zrobić tą funkcje bo tu wychodzi większość problemów]
     W = np.delete(W, W <= 0)
     if(len(W) == 0):
         return 0
@@ -111,6 +111,23 @@ def max_rook_num(W): ## TODO zajebiśćie zrobić tą funkcje bo tu wychodzi wi�
     if(np.all(W-1 > 0)):
         W = np.delete(W, W.argmin())
     return 1 + max_rook_num(W - 1)
+
+def max_rook_num(W):  ## TODO zajebiśćie zrobić tą funkcje bo tu wychodzi większość problemów]
+    tmp_W = []
+    for i in range(W.shape[0]):
+        if(W[i] > 0):
+            tmp_W.append(W[i])
+    W = np.array(tmp_W)
+    if (len(W) == 0):
+        return 0
+    if (len(W) == 1):
+        return 1
+    if (np.all(W - 1 > 0)):
+        W = np.delete(W, W.argmin())
+    return 1 + max_rook_num(W - 1)
+    W_low = np.zeros_like(W)
+
+
 
 def L_vector(W, T, fields_num):
     return - T + fields_num
