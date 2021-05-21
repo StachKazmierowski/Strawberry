@@ -147,7 +147,7 @@ K_MIN = 1
 K_MAX = 5
 
 fields_MIN = 3
-fields_MAX = 5
+fields_MAX = 21
 
 
 def save_times_pandas(times, name):
@@ -174,6 +174,5 @@ if __name__ == '__main__':
             save_matrix_pd(k * fields, k * fields, fields, pd_mat)
             save_times_pandas(times, "time")
             save_times_pandas(times_per_cell, "cell_time")
-    # for i in range(len(times) - 1):
-    #     print(times[i+1] / times[i])
+
 
