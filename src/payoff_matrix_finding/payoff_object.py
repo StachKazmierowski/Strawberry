@@ -174,5 +174,6 @@ if __name__ == '__main__':
             save_matrix_pd(k * fields, k * fields, fields, pd_mat)
             save_times_pandas(times, "time")
             save_times_pandas(times_per_cell, "cell_time")
+            print("Liczba pól", fields, "liczba zasobów:", fields * k, "czas", delta_time)
 
 
