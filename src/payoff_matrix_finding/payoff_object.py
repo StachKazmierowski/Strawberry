@@ -171,7 +171,10 @@ if __name__ == '__main__':
             if(times.iloc[k-K_MIN][fields-fields_MIN] != 0):
                 print("already have value for:")
                 print("Liczba pól", fields, "liczba zasobów:", fields * k, "czas", times.iloc[k-K_MIN][fields-fields_MIN])
-                continue
+                if(times.iloc[k-K_MIN][fields-fields_MIN] > 10 * 60 ):
+                    break
+                else:
+                    continue
             start = time.time()
             np_mat = finder.payoff_matrix(k * fields, k * fields, fields)
             delta_time = time.time() - start
