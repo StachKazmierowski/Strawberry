@@ -183,7 +183,7 @@ if __name__ == '__main__':
             save_times(times_per_cell, "cell_time")
             print("new value for:")
             print("Liczba pól", fields, "liczba zasobów:", fields * k, "czas", delta_time)
-            if(delta_time > 2):
+            if(delta_time > 10 * 60):
                 break
     # print(times)
     # print(times_per_cell)
