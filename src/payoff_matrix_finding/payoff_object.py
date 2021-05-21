@@ -160,22 +160,31 @@ def save_times_pandas(times, name):
     df = pd.DataFrame(times, columns=columns_names, index=rows_names)
     df.to_csv("../../data/times/" + name + ".csv")
 
+def save_times(times, name):
+    times.to_csv("../../data/times/" + name + ".csv")
+
 if __name__ == '__main__':
-    times = np.zeros((K_MAX-K_MIN, fields_MAX-fields_MIN))
-    times_per_cell = np.zeros((K_MAX-K_MIN, fields_MAX-fields_MIN))
+    times = pd.read_csv("../../data/times/time.csv", index_col=0)
+    times_per_cell = pd.read_csv("../../data/times/cell_time.csv", index_col=0)
     for k in range(K_MIN, K_MAX):
         for fields in range(fields_MIN, fields_MAX):
+            if(times.iloc[k-K_MIN][fields-fields_MIN] != 0):
+                print("already have value for:")
+                print("Liczba pól", fields, "liczba zasobów:", fields * k, "czas", times.iloc[k-K_MIN][fields-fields_MIN])
+                continue
             start = time.time()
             np_mat = finder.payoff_matrix(k * fields, k * fields, fields)
             delta_time = time.time() - start
-            times[k - 1, fields - 3] = delta_time
-            times_per_cell[k - 1, fields - 3] = (delta_time / (np_mat.shape[0]**2))
+            times.iloc[k-K_MIN][fields-fields_MIN]= delta_time
+            times_per_cell.iloc[k-K_MIN][fields-fields_MIN] = (delta_time / (np_mat.shape[0]**2))
             pd_mat = pd_payoff_matrix(np_mat, k * fields, k * fields, fields)
             save_matrix_pd(k * fields, k * fields, fields, pd_mat)
-            save_times_pandas(times, "time")
-            save_times_pandas(times_per_cell, "cell_time")
+            save_times(times, "time")
+            save_times(times_per_cell, "cell_time")
+            print("new value for:")
             print("Liczba pól", fields, "liczba zasobów:", fields * k, "czas", delta_time)
-            if(delta_time > 10 * 60):
+            if(delta_time > 2):
                 break
-
+    # print(times)
+    # print(times_per_cell)
 
