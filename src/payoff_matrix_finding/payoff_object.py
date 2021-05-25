@@ -212,8 +212,8 @@ if __name__ == '__main__':
             times_per_cell.iloc[res-res_MIN][fields-fields_MIN] = (delta_time / (np_mat.shape[0]**2))
             pd_mat = pd_payoff_matrix(np_mat, res, res, fields)
             save_matrix_pd(res, res, fields, pd_mat)
-            save_times(times, "time")
-            save_times(times_per_cell, "cell_time")
+            save_times(times, "time_iter")
+            save_times(times_per_cell, "cell_time_iter")
             print("new value for:")
             print("Liczba pól", fields, "liczba zasobów:", res, "czas", delta_time)
             if(delta_time > 10 * 60):
