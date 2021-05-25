@@ -142,18 +142,19 @@ def save_matrix_pd(A, B, n, df):
 
 
 finder = payoff_dynamic_finder()
-
+#%%
 K_MIN = 1
 K_MAX = 5
 
 fields_MIN = 3
-fields_MAX = 21
+fields_MAX = 11
 
-
+res_MIN = 10
+res_MAX = 26
 def save_times_pandas(times, name):
     columns_names = []
     rows_names = []
-    for i in range(K_MIN, K_MAX):
+    for i in range(res_MIN, res_MAX):
         rows_names.append(i)
     for i in range(fields_MIN, fields_MAX):
         columns_names.append(i)
@@ -163,31 +164,57 @@ def save_times_pandas(times, name):
 def save_times(times, name):
     times.to_csv("../../data/times/" + name + ".csv")
 
+save_times_pandas(np.zeros((16,8)), "time_iter")
+save_times_pandas(np.zeros((16,8)), "cell_time_iter")
+#%%
 if __name__ == '__main__':
-    times = pd.read_csv("../../data/times/time.csv", index_col=0)
-    times_per_cell = pd.read_csv("../../data/times/cell_time.csv", index_col=0)
-    for k in range(K_MIN, K_MAX):
-        for fields in range(fields_MIN, fields_MAX):
-            if(times.iloc[k-K_MIN][fields-fields_MIN] != 0):
+    # times = pd.read_csv("../../data/times/time.csv", index_col=0)
+    # times_per_cell = pd.read_csv("../../data/times/cell_time.csv", index_col=0)
+    # for k in range(K_MIN, K_MAX):
+    #     for fields in range(fields_MIN, fields_MAX):
+    #         if(times.iloc[k-K_MIN][fields-fields_MIN] != 0):
+    #             print("already have value for:")
+    #             print("Liczba pól", fields, "liczba zasobów:", fields * k, "czas", times.iloc[k-K_MIN][fields-fields_MIN])
+    #             if(times.iloc[k-K_MIN][fields-fields_MIN] > 10 * 60 ):
+    #                 break
+    #             else:
+    #                 continue
+    #         start = time.time()
+    #         np_mat = finder.payoff_matrix(k * fields, k * fields, fields)
+    #         delta_time = time.time() - start
+    #         times.iloc[k-K_MIN][fields-fields_MIN]= delta_time
+    #         times_per_cell.iloc[k-K_MIN][fields-fields_MIN] = (delta_time / (np_mat.shape[0]**2))
+    #         pd_mat = pd_payoff_matrix(np_mat, k * fields, k * fields, fields)
+    #         save_matrix_pd(k * fields, k * fields, fields, pd_mat)
+    #         save_times(times, "time")
+    #         save_times(times_per_cell, "cell_time")
+    #         print("new value for:")
+    #         print("Liczba pól", fields, "liczba zasobów:", fields * k, "czas", delta_time)
+    #         if(delta_time > 10 * 60):
+    #             break
+    # print(times)
+    # print(times_per_cell)
+    times = pd.read_csv("../../data/times/time_iter.csv", index_col=0)
+    times_per_cell = pd.read_csv("../../data/times/cell_time_iter.csv", index_col=0)
+    for fields in range(fields_MIN, fields_MAX):
+        for res in range(res_MIN, res_MAX):
+            if(times.iloc[res-res_MIN][fields-fields_MIN] != 0):
                 print("already have value for:")
-                print("Liczba pól", fields, "liczba zasobów:", fields * k, "czas", times.iloc[k-K_MIN][fields-fields_MIN])
-                if(times.iloc[k-K_MIN][fields-fields_MIN] > 10 * 60 ):
+                print("Liczba pól", fields, "liczba zasobów:", res, "czas", times.iloc[res-res_MIN][fields-fields_MIN])
+                if(times.iloc[res-res_MIN][fields-fields_MIN] > 10 * 60 ):
                     break
                 else:
                     continue
             start = time.time()
-            np_mat = finder.payoff_matrix(k * fields, k * fields, fields)
+            np_mat = finder.payoff_matrix(res, res, fields)
             delta_time = time.time() - start
-            times.iloc[k-K_MIN][fields-fields_MIN]= delta_time
-            times_per_cell.iloc[k-K_MIN][fields-fields_MIN] = (delta_time / (np_mat.shape[0]**2))
-            pd_mat = pd_payoff_matrix(np_mat, k * fields, k * fields, fields)
-            save_matrix_pd(k * fields, k * fields, fields, pd_mat)
+            times.iloc[res-res_MIN][fields-fields_MIN]= delta_time
+            times_per_cell.iloc[res-res_MIN][fields-fields_MIN] = (delta_time / (np_mat.shape[0]**2))
+            pd_mat = pd_payoff_matrix(np_mat, res, res, fields)
+            save_matrix_pd(res, res, fields, pd_mat)
             save_times(times, "time")
             save_times(times_per_cell, "cell_time")
             print("new value for:")
-            print("Liczba pól", fields, "liczba zasobów:", fields * k, "czas", delta_time)
+            print("Liczba pól", fields, "liczba zasobów:", res, "czas", delta_time)
             if(delta_time > 10 * 60):
                 break
-    # print(times)
-    # print(times_per_cell)
-
