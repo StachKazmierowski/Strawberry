@@ -10,7 +10,7 @@ RES_PATH_ERRORS_COL = "./results/symmetric/col/"
 RES_PATH_ERRORS_ROW = "./results/symmetric/row/"
 
 phis_bound = 10
-steps_number_bound = 20
+steps_number_bound = 18
 phis = [1/2**i for i in range(1, phis_bound)]
 phis_names = ["1/2^" + str(i) for i in range(1, phis_bound)]
 steps_numbers = [2**i for i in range(1,steps_number_bound)]
@@ -42,9 +42,9 @@ def run_epsilon_test(A=7, B=6, fields=5):
                 epsilons_row[i, j] = epsilon_row
                 epsilons_col[i, j] = epsilon_col
                 times[i, j] = (time.time() - start_time)/2
-        # if(i > 0 and (np.greater_equal(epsilons_col[i,:], epsilons_col[i-1,:])).all()
-        #         and (np.greater_equal(epsilons_row[i,:], epsilons_row[i-1,:])).all()):
-        #     break
+        if(i > 0 and (np.greater_equal(epsilons_col[i,:], epsilons_col[i-1,:])).all()
+                and (np.greater_equal(epsilons_row[i,:], epsilons_row[i-1,:])).all()):
+            break
     print("time:", times[times>0].sum())
     times = pd.DataFrame(times, index=phis_names, columns=steps_numbers)
     epsilons_row = pd.DataFrame(epsilons_row, index=phis_names, columns=steps_numbers)
