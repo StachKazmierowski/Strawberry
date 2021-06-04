@@ -147,9 +147,9 @@ def try_reading_matrix_numpy(A ,B, fields_number):
     return payoff_mat
 
 def get_matrix_numpy(A, B, fields_number):
-    filepath_1 = "./data/payoff_matrices/payoff_matrix(" + str(A) + \
+    filepath_1 = "./data/payoff_matrices_dynamic/payoff_matrix(" + str(A) + \
            "," + str(B) + "," + str(fields_number) + ").csv"
-    filepath_2 = "./data/payoff_matrices/payoff_matrix(" + str(B) + \
+    filepath_2 = "./data/payoff_matrices_dynamic/payoff_matrix(" + str(B) + \
            "," + str(A) + "," + str(fields_number) + ").csv"
     if(os.path.exists(filepath_1)):
         return try_reading_matrix_numpy(A, B, fields_number)

@@ -1,7 +1,5 @@
-from src.symmetrized.utils import payoff_matrix, pd_payoff_matrix, divides\
-    , try_reading_matrix_numpy, get_matrix_numpy
+from utils import get_matrix_numpy
 import numpy as np
-import pandas as pd
 import time
 np.set_printoptions(suppress=True)
 
@@ -27,14 +25,15 @@ def MWU_game_algorithm(A, B, fields_number, phi=1/2, steps_number=1000):
             p_best = p_t
         j_sumed[j_best_response] += 1
         m_t = payoff_mat[:,j_best_response]
-        p_t = np.multiply((1 - phi * m_t), p_t)
+        p_t = np.multiply((1 - phi * m_t), p_t)**(1.01)
+        # print(p_t)
         p_t = p_t/p_t.sum()
         p_t_sum = p_t_sum + p_t
     j_distribution = j_sumed/j_sumed.sum()
     return p_best, j_distribution
 
 # start_time = time.time()
-# res = MWU_game_algorithm(7,6,5,1/8,10000)
+# res = MWU_game_algorithm(7,6,5,1/8,1000)
 # print("czas", time.time() - start_time)
 # # print(np.matmul(payoff_matrix(6,6,5), res))
 # print(res[0].reshape(res[0].shape[1], res[0].shape[0]), "\n", "\n", res[1])

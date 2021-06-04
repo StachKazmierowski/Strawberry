@@ -1,8 +1,7 @@
 import numpy as np
 import pandas as pd
-from src.symmetrized.mwu import MWU_game_algorithm
-from src.solutions_parser.chopstic_data_parser import parse_file
-from src.symmetrized.utils import try_reading_matrix_numpy, divides, payoff_matrix
+from mwu import MWU_game_algorithm
+from utils import try_reading_matrix_numpy, divides, payoff_matrix
 
 path = './data/'
 filename = 'tmp.txt'
@@ -30,14 +29,10 @@ def find_marginal_distribution(resource_number, fields_number, strategy):
     if(strategy.shape[0] == 1):
         strategy = strategy.reshape((strategy.shape[1], 1))
     pure_strategies = divides(resource_number, fields_number)
-    print(pure_strategies.shape)
-    print(strategy.shape)
     res = np.zeros((resource_number+1))
     for i in range(pure_strategies.shape[0]):
         if(strategy[i, 0] > 0):
             pure_strategy = pure_strategies[i,:]
-            print(pure_strategy)
-            print(pure_strategy.shape)
             for j in range(pure_strategies.shape[1]):
                 res[int(pure_strategy[j])] += strategy[i,0]/fields_number
     return res
@@ -51,16 +46,3 @@ def epsilon_value(strategy_A, strategy_B, payoff_mat):
     epsilon_B = possible_payoff_increase_B(strategy_A, strategy_B, payoff_mat)
     epsilon_A = possible_payoff_increase_B(strategy_B.transpose(), strategy_A.transpose(), -payoff_mat.transpose())
     return max(epsilon_A, epsilon_B)
-
-mock_strategy_A, mock_strategy_B = MWU_game_algorithm(4,4,3,1/16,1000)[1].transpose(), MWU_game_algorithm(4,4,3,1/16,10000)[1]
-payoff_mat = payoff_matrix(4,4,3)
-# print(possible_payoff_increase_B(mock_strategy_A, mock_strategy_B, payoff_mat))
-print(epsilon_value(mock_strategy_A, mock_strategy_B, payoff_mat))
-# print(mock_strategy)
-# print(find_marginal_distribution(9,3,mock_strategy))
-# Mock data
-# (resource_number, fields_number, phi, steps_number) = (6,5,1/4,1000)
-# algoritmic_strategy = MWU_game_algorithm(resource_number, resource_number, fields_number, phi, steps_number)
-# # print(payoff_mat.shape)
-# solution_A = chopstic_row_solution_to_vector(6,5,parse_file(path, filename))
-# print(solution_A)
