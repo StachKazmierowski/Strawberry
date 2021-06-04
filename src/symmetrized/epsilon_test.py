@@ -51,11 +51,11 @@ def run_epsilon_test(A=7, B=6, fields=5):
                 epsilons_row_col[i,j] = epsilon_row_col
                 epsilons_col_row[i,j] = epsilon_col_row
                 times[i, j] = algorith_time
-        if(i > 0 and (np.greater_equal(epsilons_col_col[i,:], epsilons_col_col[i-1,:])).all()
-                and (np.greater_equal(epsilons_row_row[i,:], epsilons_row_row[i-1,:])).all()
-                and (np.greater_equal(epsilons_row_col[i,:], epsilons_row_col[i-1,:])).all()
-                and (np.greater_equal(epsilons_col_row[i,:], epsilons_col_row[i-1,:])).all()):
-            break
+        # if(i > 0 and (np.greater_equal(epsilons_col_col[i,:], epsilons_col_col[i-1,:])).all()
+        #         and (np.greater_equal(epsilons_row_row[i,:], epsilons_row_row[i-1,:])).all()
+        #         and (np.greater_equal(epsilons_row_col[i,:], epsilons_row_col[i-1,:])).all()
+        #         and (np.greater_equal(epsilons_col_row[i,:], epsilons_col_row[i-1,:])).all()):
+        #     break
     print("time:", times[times>0].sum())
     times = pd.DataFrame(times, index=phis_names, columns=steps_numbers)
     epsilons_row_row = pd.DataFrame(epsilons_row_row, index=phis_names, columns=steps_numbers)
