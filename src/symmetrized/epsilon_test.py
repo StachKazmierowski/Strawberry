@@ -5,9 +5,9 @@ import os
 import time
 import pandas as pd
 import numpy as np
-RES_PATH_TIMES = "../../results/symmetric/times/"
-RES_PATH_ERRORS_COL = "../../results/symmetric/col/"
-RES_PATH_ERRORS_ROW = "../../results/symmetric/row/"
+RES_PATH_TIMES = "../../res/symmetric/times/"
+RES_PATH_ERRORS_COL = "../../res/symmetric/col/"
+RES_PATH_ERRORS_ROW = "../../res/symmetric/row/"
 
 phis_bound = 10
 steps_number_bound = 18
