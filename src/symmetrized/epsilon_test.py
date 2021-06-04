@@ -9,8 +9,8 @@ RES_PATH_TIMES = "../../res/symmetric/times/"
 RES_PATH_ERRORS_COL = "../../res/symmetric/col/"
 RES_PATH_ERRORS_ROW = "../../res/symmetric/row/"
 
-phis_bound = 10
-steps_number_bound = 18
+phis_bound = 11
+steps_number_bound = 16
 phis = [1/2**i for i in range(1, phis_bound)]
 phis_names = ["1/2^" + str(i) for i in range(1, phis_bound)]
 steps_numbers = [2**i for i in range(1,steps_number_bound)]

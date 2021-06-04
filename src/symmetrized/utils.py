@@ -133,7 +133,7 @@ def remove_dominated_startegies_row_player(df):
 
 def try_reading_matrix(A, B, fields_number):
     try:
-        path = "./data/payoff_matrices/payoff_matrix(" + str(A) + \
+        path = "../../data/payoff_matrices_dynamic/payoff_matrix(" + str(A) + \
                "," + str(B) + "," + str(fields_number) + ").csv"
         payoff_mat = pd.read_csv(path, index_col=0)
         payoff_mat *= -1
@@ -147,15 +147,17 @@ def try_reading_matrix_numpy(A ,B, fields_number):
     return payoff_mat
 
 def get_matrix_numpy(A, B, fields_number):
-    filepath_1 = "./data/payoff_matrices_dynamic/payoff_matrix(" + str(A) + \
+    filepath_1 = "../../data/payoff_matrices_dynamic/payoff_matrix(" + str(A) + \
            "," + str(B) + "," + str(fields_number) + ").csv"
-    filepath_2 = "./data/payoff_matrices_dynamic/payoff_matrix(" + str(B) + \
+    filepath_2 = "../../data/payoff_matrices_dynamic/payoff_matrix(" + str(B) + \
            "," + str(A) + "," + str(fields_number) + ").csv"
     if(os.path.exists(filepath_1)):
         return try_reading_matrix_numpy(A, B, fields_number)
     if(os.path.exists(filepath_2)):
         return - try_reading_matrix_numpy(B, A, fields_number).transpose()
     else:
+        print("NIE ZNALEZIONO MACIERZY W PAMIECI!","resA",  A, "resB", B, "fields_num", fields_number)
+        print(filepath_1, filepath_2)
         return payoff_matrix(A, B, fields_number)
 
 def save_matrix_pd(A, B, n):
