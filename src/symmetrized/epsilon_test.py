@@ -5,9 +5,9 @@ import os
 import time
 import pandas as pd
 import numpy as np
-RES_PATH_TIMES = "./results/symmetric/times/"
-RES_PATH_ERRORS_COL = "./results/symmetric/col/"
-RES_PATH_ERRORS_ROW = "./results/symmetric/row/"
+RES_PATH_TIMES = "../../results/symmetric/times/"
+RES_PATH_ERRORS_COL = "../../results/symmetric/col/"
+RES_PATH_ERRORS_ROW = "../../results/symmetric/row/"
 
 phis_bound = 10
 steps_number_bound = 18
@@ -18,11 +18,11 @@ steps_numbers = [2**i for i in range(1,steps_number_bound)]
 def run_epsilon_test(A=7, B=6, fields=5):
     name_part = str(A) + "_" + str(B) + "_" + str(fields)
     if(os.path.exists(RES_PATH_TIMES + name_part + ".csv")):
-        print("already tested for for:")
+        print("already tested for:")
         print("Liczba pól", fields, "liczba zasobów:", A, ",", B)
         return
     payoff_mat = get_matrix_numpy(A, B, fields)
-    print("test for for:")
+    print("test for:")
     print("Liczba pól", fields, "liczba zasobów:", A, ",", B)
     epsilons_row = np.zeros((len(phis), len(steps_numbers)))
     epsilons_col = np.zeros((len(phis), len(steps_numbers)))
