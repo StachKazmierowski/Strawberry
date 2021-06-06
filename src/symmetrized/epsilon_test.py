@@ -19,10 +19,6 @@ steps_numbers = [2**i for i in range(1,steps_number_bound)]
 
 def run_epsilon_test(A=7, B=6, fields=5):
     name_part = str(A) + "_" + str(B) + "_" + str(fields)
-    if(os.path.exists(RES_PATH_TIMES + name_part + ".csv")):
-        print("already tested for:")
-        print("Liczba pól", fields, "liczba zasobów:", A, ",", B)
-        return
     payoff_mat = get_matrix_numpy(A, B, fields)
     print("test for:")
     print("Liczba pól", fields, "liczba zasobów:", A, ",", B)
@@ -31,9 +27,29 @@ def run_epsilon_test(A=7, B=6, fields=5):
     epsilons_row_col = np.zeros((len(phis), len(steps_numbers)))
     epsilons_col_row = np.zeros((len(phis), len(steps_numbers)))
     times = -np.ones((len(phis), len(steps_numbers)))
+    if (os.path.exists(RES_PATH_TIMES + name_part + ".csv")):
+        times = pd.read_csv(RES_PATH_TIMES + name_part + ".csv", index_col=0)
+        epsilons_row_row = pd.read_csv(RES_PATH_ERRORS_ROW_ROW + name_part + ".csv", index_col=0)
+        epsilons_col_col = pd.read_csv(RES_PATH_ERRORS_COL_COL + name_part + ".csv", index_col=0)
+        epsilons_row_col = pd.read_csv(RES_PATH_ERRORS_ROW_COL + name_part + ".csv", index_col=0)
+        epsilons_col_row = pd.read_csv(RES_PATH_ERRORS_COL_ROW + name_part + ".csv", index_col=0)
+        times.columns = times.columns.astype(int)
+        epsilons_row_row.columns = epsilons_row_row.columns.astype(int)
+        epsilons_col_col.columns = epsilons_col_col.columns.astype(int)
+        epsilons_row_col.columns = epsilons_row_col.columns.astype(int)
+        epsilons_col_row.columns = epsilons_col_row.columns.astype(int)
+    else:
+        times = pd.DataFrame(times, index=phis_names, columns=steps_numbers)
+        epsilons_row_row = pd.DataFrame(epsilons_row_row, index=phis_names, columns=steps_numbers)
+        epsilons_col_col = pd.DataFrame(epsilons_col_col, index=phis_names, columns=steps_numbers)
+        epsilons_row_col = pd.DataFrame(epsilons_row_col, index=phis_names, columns=steps_numbers)
+        epsilons_col_row = pd.DataFrame(epsilons_col_row, index=phis_names, columns=steps_numbers)
     for i in range(len(phis)):
+        if (times.iloc[i][2] != -1):
+            print("continuing")
+            continue
         print(str(int(100*i/len(phis))) + "%")
-        for j in range(len(steps_numbers)):
+        for j in range(len(steps_numbers)): #TODO ogarnąć zapisywanie pliku co linia
             start_time = time.time()
             strategy_A_row, strategy_B_col = MWU_game_algorithm(payoff_mat, phis[i], steps_numbers[j])
             strategy_B_row, strategy_A_col = MWU_game_algorithm(-np.transpose(payoff_mat), phis[i], steps_numbers[j])
@@ -46,27 +62,21 @@ def run_epsilon_test(A=7, B=6, fields=5):
             if(epsilon_col == 0 and epsilon_row == 0):
                 break
             else:
-                epsilons_row_row[i, j] = epsilon_row
-                epsilons_col_col[i, j] = epsilon_col
-                epsilons_row_col[i,j] = epsilon_row_col
-                epsilons_col_row[i,j] = epsilon_col_row
-                times[i, j] = algorith_time
-        # if(i > 0 and (np.greater_equal(epsilons_col_col[i,:], epsilons_col_col[i-1,:])).all()
-        #         and (np.greater_equal(epsilons_row_row[i,:], epsilons_row_row[i-1,:])).all()
-        #         and (np.greater_equal(epsilons_row_col[i,:], epsilons_row_col[i-1,:])).all()
-        #         and (np.greater_equal(epsilons_col_row[i,:], epsilons_col_row[i-1,:])).all()):
-        #     break
-    print("time:", times[times>0].sum())
-    times = pd.DataFrame(times, index=phis_names, columns=steps_numbers)
-    epsilons_row_row = pd.DataFrame(epsilons_row_row, index=phis_names, columns=steps_numbers)
-    epsilons_col_col = pd.DataFrame(epsilons_col_col, index=phis_names, columns=steps_numbers)
-    epsilons_row_col = pd.DataFrame(epsilons_row_col, index=phis_names, columns=steps_numbers)
-    epsilons_col_row = pd.DataFrame(epsilons_col_row, index=phis_names, columns=steps_numbers)
-    times.to_csv(RES_PATH_TIMES + name_part + ".csv")
-    epsilons_row_row.to_csv(RES_PATH_ERRORS_ROW_ROW + name_part + ".csv")
-    epsilons_col_col.to_csv(RES_PATH_ERRORS_COL_COL + name_part + ".csv")
-    epsilons_row_col.to_csv(RES_PATH_ERRORS_ROW_COL + name_part + ".csv")
-    epsilons_col_row.to_csv(RES_PATH_ERRORS_COL_ROW + name_part + ".csv")
+                epsilons_row_row.iloc[i][2**(j+1)] = epsilon_row
+                epsilons_col_col.iloc[i][2**(j+1)] = epsilon_col
+                epsilons_row_col.iloc[i][2**(j+1)] = epsilon_row_col
+                epsilons_col_row.iloc[i][2**(j+1)] = epsilon_col_row
+                times.iloc[i][2**(j+1)] = algorith_time
+        times_pd = pd.DataFrame(times, index=phis_names, columns=steps_numbers)
+        epsilons_row_row_pd = pd.DataFrame(epsilons_row_row, index=phis_names, columns=steps_numbers)
+        epsilons_col_col_pd = pd.DataFrame(epsilons_col_col, index=phis_names, columns=steps_numbers)
+        epsilons_row_col_pd = pd.DataFrame(epsilons_row_col, index=phis_names, columns=steps_numbers)
+        epsilons_col_row_pd = pd.DataFrame(epsilons_col_row, index=phis_names, columns=steps_numbers)
+        times_pd.to_csv(RES_PATH_TIMES + name_part + ".csv")
+        epsilons_row_row_pd.to_csv(RES_PATH_ERRORS_ROW_ROW + name_part + ".csv")
+        epsilons_col_col_pd.to_csv(RES_PATH_ERRORS_COL_COL + name_part + ".csv")
+        epsilons_row_col_pd.to_csv(RES_PATH_ERRORS_ROW_COL + name_part + ".csv")
+        epsilons_col_row_pd.to_csv(RES_PATH_ERRORS_COL_ROW + name_part + ".csv")
 
 #%%
 fields_MIN = 3
@@ -77,6 +87,7 @@ res_MAX = 26
 
 for res in range(res_MIN,res_MAX):
     for fields in range(fields_MIN,fields_MAX):
+        
         run_epsilon_test(res, res, fields)
 
 
