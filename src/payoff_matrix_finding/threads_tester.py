@@ -15,19 +15,18 @@ if __name__ == '__main__':
     fields_MIN, fields_MAX = int(sys.argv[1]), int(sys.argv[2])
     print(fields_MIN, fields_MAX)
     finder = payoff_dynamic_finder()
-    times = np.zeros((4, fields_MAX-fields_MIN))
-    times_per_cell = np.zeros((4, fields_MAX-fields_MIN))
-    for thread in range(4):
-        threads_num = 2**thread
+    times = np.zeros((8, fields_MAX-fields_MIN))
+    times_per_cell = np.zeros((8, fields_MAX-fields_MIN))
+    for threads_num in range(1,9):
         for fields in range(fields_MIN, fields_MAX):
             res = 10
             start = time.time()
             np_mat = finder.payoff_matrix(res, res, fields,threads_num)
             delta_time = time.time() - start
-            times[thread, fields-fields_MIN] = delta_time
-            times_per_cell[thread, fields-fields_MIN] = (delta_time / (np_mat.shape[0]**2))
+            times[threads_num-1, fields-fields_MIN] = delta_time
+            times_per_cell[threads_num-1, fields-fields_MIN] = (delta_time / (np_mat.shape[0]**2))
             print(threads_num, fields, delta_time)
-    rows = [2**i for i in range(4)]
+    rows = [i for i in range(1,9)]
     columns = [i for i in range(fields_MIN, fields_MAX)]
     print(rows)
     print(columns)
