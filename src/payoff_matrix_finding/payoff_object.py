@@ -8,7 +8,7 @@ from utils import divides
 import numpy as np
 import pandas as pd
 
-class payoff_dynamic_finder:
+class payoff_dynamic_finder():
     def __init__(self):
         return
 
@@ -103,20 +103,20 @@ class payoff_dynamic_finder:
             print(wins, loses, ties)
         return i, j, (wins - loses) / ( wins + loses + ties)
 
-    def payoff_matrix(self, A_number, B_number, n): ## TODO dla symetrycznej gry wypełniamy tylko pół macieży
+    def payoff_matrix(self, A_number, B_number, n, threads_number=None): ## TODO dla symetrycznej gry wypełniamy tylko pół macieży
         symmetric = (A_number == B_number)
         self.A_symmetrized_strategies = divides(A_number, n)
         self.B_symmetrized_strategies = divides(B_number, n)
         matrix = np.zeros((self.A_symmetrized_strategies.shape[0], self.B_symmetrized_strategies.shape[0]))
         if(symmetric):
             args = ((i,j) for i in range(self.A_symmetrized_strategies.shape[0]) for j in range(i))
-            with concurrent.futures.ProcessPoolExecutor(max_workers=None) as executor:
+            with concurrent.futures.ProcessPoolExecutor(max_workers=threads_number) as executor:
                 for i, j, val in executor.map(self.payoff, args):
                     matrix[i, j] = val
                     matrix[j, i] = -val
         else:
             args = ((i,j) for i in range(self.A_symmetrized_strategies.shape[0]) for j in range(self.B_symmetrized_strategies.shape[0]))
-            with concurrent.futures.ProcessPoolExecutor(max_workers=None) as executor:
+            with concurrent.futures.ProcessPoolExecutor(max_workers=threads_number) as executor:
                 for i, j, val in executor.map(self.payoff, args):
                     matrix[i, j] = val
         return matrix
@@ -206,7 +206,7 @@ if __name__ == '__main__':
                 else:
                     continue
             start = time.time()
-            np_mat = finder.payoff_matrix(res, res, fields)
+            np_mat = finder.payoff_matrix(res, res, fields,)
             delta_time = time.time() - start
             times.iloc[res-res_MIN][fields-fields_MIN]= delta_time
             times_per_cell.iloc[res-res_MIN][fields-fields_MIN] = (delta_time / (np_mat.shape[0]**2))
