@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import time
+import sys
 from payoff_object import payoff_dynamic_finder, pd_payoff_matrix
 
 fields_MIN, fields_MAX = 5, 8
@@ -10,6 +11,9 @@ def save_times(times, name):
     times.to_csv("../../data/threads_times/" + name + ".csv")
 
 if __name__ == '__main__':
+    print(sys.argv[1])
+    fields_MIN, fields_MAX = int(sys.argv[1]), int(sys.argv[2])
+    print(fields_MIN, fields_MAX)
     finder = payoff_dynamic_finder()
     times = np.zeros((4, fields_MAX-fields_MIN))
     times_per_cell = np.zeros((4, fields_MAX-fields_MIN))
