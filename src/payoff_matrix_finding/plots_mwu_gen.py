@@ -16,16 +16,16 @@ print(list(tmp.columns))
 def plot_1(phi_exponent):
     plt.clf()
     for i in range(10,22, 2):
-        tmp_label = str(i) + " zasobów"
+        tmp_label = str(i) + " resources"
         filename = "./res/symmetric/times/" + str(i) + "_" + str(i) + "_10.csv"
         tmp = pd.read_csv(filename, index_col=0)
         plt.scatter(list(tmp.columns.astype(int)), list(tmp.iloc[phi_exponent-1]), label=tmp_label)
-        plt.xlabel("Liczba kroków")
-        plt.ylabel("Czas[s]")
+        plt.xlabel("Number of steps")
+        plt.ylabel("Time[s]")
         plt.xscale('log')
         plt.yscale('log')
 
-    plt.title("Czasu działania algorytmu dla phi=" + '$(0.5)^' + str(phi_exponent) + '$')
+    plt.title("Algorithm runtime for phi=" + '$(0.5)^' + str(phi_exponent) + '$')
     plt.legend()
     plt.savefig("./plots_mwu/time_steps" + str(phi_exponent) + "=phi.png")
     plt.show()
@@ -53,7 +53,7 @@ def plot_epsilon_steps_number(phi_exponent, fields_num, res_num):
     # phi_exponent = 5
     plt.clf()
     for i in range(res_num,res_num+1, 2):
-        tmp_label = "strategia gracza kolumnowego"
+        tmp_label = "column player strategy"
         filename = "./res/symmetric/col_col/" + str(i) + "_" + str(i) + "_" + str(fields_num) + ".csv"
         tmp = pd.read_csv(filename, index_col=0)
         plt.plot(list(tmp.columns.astype(int)), list(tmp.iloc[phi_exponent-1]), label=tmp_label)
@@ -63,22 +63,22 @@ def plot_epsilon_steps_number(phi_exponent, fields_num, res_num):
         # tmp = pd.read_csv(filename, index_col=0)
         # plt.plot(list(tmp.columns.astype(int)), list(tmp.iloc[phi_exponent-1]), label=tmp_label)
 
-        tmp_label = "strategia gracza wierszowego"
+        tmp_label = "row player strategy"
         filename = "./res/symmetric/row_row/" + str(i) + "_" + str(i) + "_" + str(fields_num) + ".csv"
         tmp = pd.read_csv(filename, index_col=0)
         plt.plot(list(tmp.columns.astype(int)), list(tmp.iloc[phi_exponent-1]), label=tmp_label)
 
-        plt.xlabel("Liczba kroków")
+        plt.xlabel("Number of steps")
         plt.ylabel("epsilon")
         # plt.xscale('log')
         plt.yscale('log')
 
-    plt.title("Uzyskane dokładności dla A=B=" + str(res_num) + ", n=" + str(fields_num) + ", phi = $(0.5)^" + str(phi_exponent) + "$")
+    plt.title("The obtained accuracies for A=B=" + str(res_num) + ", n=" + str(fields_num) + ", phi = $(0.5)^" + str(phi_exponent) + "$")
     plt.legend()
     # plt.show()
     plt.savefig("./plots_mwu/epsilon_row_col_" + str(res_num) + "_" + str(res_num) + "_" + str(fields_num) + ".png")
-#
-plot_epsilon_steps_number(5, 7, 19)
+    plt.show()
+plot_epsilon_steps_number(5, 10, 20)
 
 #%%
 # phi_exponent = 5
@@ -95,24 +95,24 @@ def plot_epsilon_phi(steps_num, fields_num):
     plt.clf()
     for res_num in range(15,22,2):
         fields_num = 10
-        tmp_label = "liczba zasobów = " + str(res_num)
+        tmp_label = str(res_num) + " resources"
         filename = "./res/symmetric/col_col/" + str(res_num) + "_" + str(res_num) + "_" + str(fields_num) + ".csv"
         tmp = pd.read_csv(filename, index_col=0)
         plt.scatter(phis()[1:-3], list(tmp[str(steps_num)])[1:-3], label=tmp_label)
     plt.xlabel("phi")
     plt.ylabel("epsilon")
     plt.semilogx(base=2)
-    # plt.yscale('log')
+    plt.yscale('log')
 
-    plt.title("Uzyskane dokładności dla n=" + str(fields_num) + ", liczba kroków=" + str(steps_num))
+    plt.title("The obtained accuracies for  n=" + str(fields_num) + ", steps_number=" + str(steps_num))
     plt.legend()
-    plt.savefig("./plots_mwu/lin_epsilon_phi" + str(fields_num) + "_fields" + str(steps_num) + "_steps.png")
+    plt.savefig("./plots_mwu/epsilon_phi" + str(fields_num) + "_fields" + str(steps_num) + "_steps.png")
     plt.show()
 
 plot_epsilon_phi(int(32768/2), 10)
 print(phis().reverse())
 #%%
-phi_exponent = 5
+phi_exponent = 6
 fields_num = 10
 def plot_list(fields_num):
     tmp = []
@@ -126,14 +126,14 @@ def plot_list(fields_num):
 
 plt.clf()
 for i in range(4,11,2):
-    tmp_label = str(i) + " pól"
+    tmp_label = str(i) + " fields"
     plt.scatter(list(range(10,22)), plot_list(i), label=tmp_label)
-    plt.xlabel("Liczba zasobów")
-    plt.ylabel("Czas[s]")
+    plt.xlabel("Number of resources")
+    plt.ylabel("Time[s]")
     # plt.xscale('log')
     plt.yscale('log')
 
-plt.title("Czasu działania algorytmu dla n=10, \n phi=" + '$(0.5)^' + str(phi_exponent) + '$' + ", steps_number=32768")
+plt.title("Algorithm runtime for n=10, \n phi=" + '$(0.5)^' + str(phi_exponent) + '$' + ", steps_number=32768")
 plt.legend()
 plt.savefig("./plots_mwu/time_fixed_fields_res_arg_" + str(phi_exponent) + "=phi.png")
 plt.show()

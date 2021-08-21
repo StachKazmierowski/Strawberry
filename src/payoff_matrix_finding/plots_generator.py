@@ -33,15 +33,16 @@ def div_times(times):
 
 plt.clf()
 for i in range(0, res_MAX - res_MIN +1, 5):
-    tmp_label=str(i+res_MIN) + " zasobów"
+    tmp_label=str(i+res_MIN) + " resources"
+    # print(prepare_fields(), list(tmp.iloc[i]))
     plt.plot(prepare_fields(), list(tmp.iloc[i]), label=tmp_label)
-    plt.xlabel("Liczba pól")
-    plt.ylabel("Czas[s]")
+    plt.xlabel("Number of fields")
+    plt.ylabel("Time[s]")
     plt.yscale('log')
     # plt.show()
-plt.title("Czas obliczania macierzy wypłat")
+plt.title("Payoff matrix calculation time")
 plt.legend()
-# plt.savefig("./plots/time(fields)_plt.png")
+plt.savefig("./plots/time(fields)_plt.png")
 plt.show()
 #%%
 tmp = pd.read_csv("./data/times/time_iter.csv", index_col=0)
@@ -62,13 +63,13 @@ plt.clf()
 print(tmp.columns)
 for i in range(3, fields_MAX-fields_MIN+1):
     # print(i)
-    tmp_label=str(i+fields_MIN) + " pól"
+    tmp_label=str(i+fields_MIN) + " fields"
     plt.plot(prepare_reses(), list(tmp[tmp.columns[i]]), label=tmp_label)
-    plt.xlabel("Liczba zasobów")
-    plt.ylabel("Czas[s]")
+    plt.xlabel("Number of fields")
+    plt.ylabel("Time[s]")
     plt.yscale('log')
     # plt.show()
-plt.title("Czas obliczania macierzy wypłat")
+plt.title("Payoff matrix calculation time")
 plt.legend()
 plt.savefig("./plots/time(res)_plt.png")
 plt.show()
@@ -76,14 +77,12 @@ plt.show()
 tmp = pd.read_csv("./data/times/cell_time_iter.csv", index_col=0)
 plt.clf()
 for i in range(5, res_MAX - res_MIN +1, 5):
-    tmp_label=str(i+res_MIN) + " zasobów"
+    tmp_label=str(i+res_MIN) + " resources"
     plt.plot(prepare_fields()[:], list(tmp.iloc[i]/1000)[:], label=tmp_label)
-    plt.xlabel("Liczba pól")
-    plt.ylabel("Czas[ms]")
+    plt.xlabel("Number of fields")
+    plt.ylabel("Time[ms]")
     plt.xticks(list(range(3,11)))
-    # plt.yscale('log')
-    # plt.show()
-plt.title("Średni czas obliczania pojedynczej wypłaty")
+plt.title("Average time for calculating a single payoff")
 plt.legend()
 plt.savefig("./plots/single_time(fields)_plt.png")
 plt.show()
@@ -107,16 +106,16 @@ tmp = pd.read_csv("./data/times/cell_time_iter.csv", index_col=0)
 plt.clf()
 for i in range(3, fields_MAX-fields_MIN+1):
     # print(i)
-    tmp_label=str(i+fields_MIN) + " pól"
+    tmp_label=str(i+fields_MIN) + " fields"
     plt.plot(prepare_reses(), list(tmp[tmp.columns[i]]/1000), label=tmp_label)
-    plt.xlabel("Liczba zasobów")
-    plt.ylabel("Czas[ms]")
+    plt.xlabel("Number of fields")
+    plt.ylabel("Time[ms]")
     plt.xticks(list(range(10,26,2)))
     # plt.yscale('log')
     # plt.show()
-plt.title("Średni czas obliczania pojedynczej wypłaty")
+plt.title("Average time for calculating a single payoff")
 plt.legend()
-# plt.savefig("./plots/single_time(res)_plt.png")
+plt.savefig("./plots/single_time(res)_plt.png")
 plt.show()
 #%%
 tmp = pd.read_csv("./data/times/time.csv", index_col=0)
@@ -125,32 +124,34 @@ ranges = [21,13]
 ends = [18,10]
 plt.clf()
 for i in range(2):
-    tmp_label=str(i+1) + "-krotność zasobów"
+    if(i == 0):
+        tmp_label="resources number equals number of fields"
+    else:
+        tmp_label="resources number is 2 times number of fields"
     plt.plot(list(range(3,ranges[i])), list(tmp.iloc[i])[0:ends[i]], label=tmp_label)
-    plt.xlabel("Liczba pól")
-    plt.ylabel("Czas[s]")
+    plt.xlabel("Number of fields")
+    plt.ylabel("Time[ms]")
     plt.yscale('log')
     plt.xticks(list(range(3,21)))
     # plt.show()
-plt.title("Czas obliczania macierzy wypłat")
+plt.title("Payoff matrix calculation time")
 plt.legend()
-# plt.savefig("./plots/time_mul(fields).png")
+plt.savefig("./plots/time_mul(fields).png")
 plt.show()
 #%%
 tmp = pd.read_csv("./data/times/cell_time.csv", index_col=0)
 # print(tmp)
 plt.clf()
 for i in range(2):
-    tmp_label=str(i+1) + "-krotność zasobów"
+    if(i == 0):
+        tmp_label="resources number equals number of fields"
+    else:
+        tmp_label="resources number is 2 times number of fields"
     plt.plot(list(range(3,ranges[i])), list(tmp.iloc[i]/1000)[0:ends[i]], label=tmp_label)
-    plt.xlabel("Liczba pól")
-    plt.ylabel("Czas[ms]")
-    # plt.yscale('log')
+    plt.xlabel("Number of fields")
+    plt.ylabel("Time[ms]")
     plt.xticks(list(range(3,21)))
-    # plt.yticks(list(range(0,10,1)))
-    # plt.yscale('log')
-    # plt.show()
-plt.title("Średni czas obliczania pojedynczej wypłaty")
+plt.title("Average time for calculating a single payoff")
 plt.legend()
 plt.savefig("./plots/single_time_mul(fields)_plt.png")
 plt.show()

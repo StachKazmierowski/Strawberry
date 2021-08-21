@@ -22,14 +22,14 @@ tmp = pd.read_csv(filename, index_col=0)
 for fields in range(fields_MIN,fields_MAX, 2):
     t_0 = list(tmp[str(fields)])[0]
     tmp_list = [t_0/x for x in tmp[str(fields)]]
-    tmp_label = str(fields) + " pól"
+    tmp_label = str(fields) + " fields"
     plt.plot(list(tmp.index.astype(int)), tmp_list, label=tmp_label)
-    plt.xlabel("Liczba wątków")
-    plt.ylabel("Przyspieszenie")
+    plt.xlabel("Number of threads")
+    plt.ylabel("Speedup")
     # plt.xscale('log', base=2)
     # plt.yscale('log',  base=2)
 
-plt.title("Przyspieszenie algorytmu dla wielu wątków, \n wyniki dla symetrycznych konfliktów, liczba zasobów to 10.")
+plt.title("Speedup of the algorithm for multiple threads, \n results for symmetric conflicts, the number of resources is 10.")
 plt.legend()
 plt.savefig("./plots/threads_speed_up_fixed_res.png")
 plt.show()
@@ -42,14 +42,14 @@ tmp = pd.read_csv(filename, index_col=0)
 for res in range(res_MIN,res_MAX, 2):
     t_0 = list(tmp[str(res)])[0]
     tmp_list = [t_0/x for x in tmp[str(res)]]
-    tmp_label = str(res) + " zasobów"
+    tmp_label = str(res) + " resources"
     plt.plot(list(tmp.index.astype(int)), tmp_list, label=tmp_label)
-    plt.xlabel("Liczba wątków")
-    plt.ylabel("Przyspieszenie")
+    plt.xlabel("Number of threads")
+    plt.ylabel("Speedup")
     # plt.xscale('log', base=2)
     # plt.yscale('log',  base=2)
 
-plt.title("Przyspieszenie algorytmu dla wielu wątków, \n wyniki dla symetrycznych konfliktów, liczba pól to 10.")
+plt.title("Speedup of the algorithm for multiple threads, \n results for symmetric conflicts, the number of fields is 10.")
 plt.legend()
 plt.savefig("./plots/threads_speed_up_fixed_fields.png")
 plt.show()
