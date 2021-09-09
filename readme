@@ -21,4 +21,4 @@ results($A,$B,$n) - katalog z wynikami algorytmu, a w nim (dla $x w {A,B} oznacz
 Potrzebne biblioteki:
 numpy, pandas, time, datetime, os, concurrent.futures, math, scipy.special, sys
 Polecenie instalujące:
-pip3 install numpy, pandas, time, datetime, os, concurrent.futures, math, scipy.special, sys
+pip3 install numpy pandas time datetime os concurrent.futures math scipy.special sys
