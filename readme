@@ -1,0 +1,24 @@
+Program wywołujemy następującym poleceniem:
+python3 main.py $troopsANo $troopsBNo $battlefieldsNo $steps_number $phi $threads_number
+Pierwsze trzy parametry są konieczne, kolejne trzy opcjonalne (domyślne wartości można zmienić w pliku src/utils.py)
+
+Skrypt run.sh jest przykładowym skryptem do wywoływania programu dla kolejnych wartości.
+
+Program po uruchomieniu sprawdza, czy odpowiedniej macierzy wypłat nie ma już zapisanej w pamieci ( w katalogu payoff_matrices).
+Jeżeli tak jest, program wczytuje macierz i z niej korzysta. Wpp. oblicza macierz, zapisuje i przechodzi do algorytmu MWU.
+
+W wyniku działania programu powstają:
+payoff_matrix($A,$B,$n).csv - plik z macierzą wypłat
+payoff_matrix_raport($A,$B,$n).csv - plik z informacjami o generowaniu macierzy wypłat (kiedy, iloma rdzeniami i jak długo)
+results($A,$B,$n) - katalog z wynikami algorytmu, a w nim (dla $x w {A,B} oznaczającym gracza):
+	$x_value - wartość gry dla gracza $x
+	$x_strategy.csv - znaleziona strategia gracza $x
+	$x_marginal_distribution - rozkład brzegowy znalezionej strategii gracza $x
+	$x_epsilon_value.txt - o ile mogłaby wzrosnąć wypłąta gracza $x
+	raport.txt - raport z działania algorytmu (kiedy, jaki czas działania i parametry)
+
+
+Potrzebne biblioteki:
+numpy, pandas, time, datetime, os, concurrent.futures, math, scipy.special, sys
+Polecenie instalujące:
+pip3 install numpy, pandas, time, datetime, os, concurrent.futures, math, scipy.special, sys
