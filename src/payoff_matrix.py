@@ -93,7 +93,7 @@ def what_single_type(W, T, j):
     return -1
 
 def is_double_type_with_tie(W, T, j):
-    if(np.min(W) > 0 and np.min(W) == np.max(W) and np.min(T) == np.max(T) and T[-1] - W[-1] > 0): # T and W
+    if(np.min(W) > 0 and np.min(W) == np.max(W) and np.min(T) == np.max(T) and T[-1] - W[-1] > 0): # T and W TODO czy tu nie jest przypadkiem źle (może być jeszcze L)
         return True
     if(np.max(W) == 0 and np.max(T) > np.min(T)): # L and T
         return True

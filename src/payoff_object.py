@@ -112,7 +112,7 @@ class payoff_dynamic_finder():
         self.B_symmetrized_strategies = divides(B_number, n)
         matrix = np.zeros((self.A_symmetrized_strategies.shape[0], self.B_symmetrized_strategies.shape[0]))
         if(symmetric):
-            args = ((i,j) for i in range(self.A_symmetrized_strategies.shape[0]) for j in range(i))
+            args = ((i,j) for i in range(self.A_symmetrized_strategies.shape[0]) for j in range(i)) ## Nie robimy przekątnej bo zawsze są na niej zera
             with concurrent.futures.ProcessPoolExecutor(max_workers=threads_number) as executor:
                 for i, j, val in executor.map(self.payoff, args):
                     matrix[i, j] = val
@@ -176,3 +176,4 @@ def save_raport(A,B,n,delta_time,threads_count):
     else:
         f.write(str(threads_count))
     f.close()
+

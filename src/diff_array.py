@@ -3,8 +3,6 @@ from payoff_matrix import single_type_rectangle, width_to_remove, max_rook_num, 
 import numpy as np
 
 def F_0(i, j, m, x, flag):
-    # print("H0")
-    # print(flag)
     if(flag == 1):
         if(x != m):
             return 0
@@ -17,6 +15,28 @@ def F_0(i, j, m, x, flag):
         if(x != -m):
             return 0
         return single_type_rectangle(i, j, m)
+
+def how_many_rooks_permutations_in_W_single_area(i, j, m, x, flag):
+    if(flag != -1 and flag != 0 and flag != 1):
+        print("Flag set incorrectly")
+    if(flag == 1):
+        if(x != m):
+            return 0
+        return single_type_rectangle(i, j, m)
+    if(x != 0):
+        return 0
+    return single_type_rectangle(i, j, m)
+
+def how_many_rooks_permutations_in_W_double_area(i, j, m, x, W, T, flag):
+    if(flag == -1):
+        if(x > 0):
+            return 0
+        width = width_to_remove(T)
+        return single_type_rectangle(i - width, j, -x) * single_type_rectangle(width, j + x, m + x)
+    if(flag == 1):
+        height = T[-1] - W[-1]
+        return single_type_rectangle(i, j - height, x) * single_type_rectangle(i - x, height, m - x)
+
 
 def F_1(i, j, m, x, W, T, flag):
     if(abs(x) > m):

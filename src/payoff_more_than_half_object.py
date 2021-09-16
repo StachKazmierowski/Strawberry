@@ -2,7 +2,8 @@ import time
 import datetime
 from dynamic_payoff import find_m_constraints, find_knots
 from payoff_matrix import single_payoff_matrix_vectors, vector_min, max_rook_num, L_vector, \
-    is_single_type, what_single_type, single_type_rectangle, width_to_remove, is_double_type_with_tie, what_double_type
+    is_single_type, what_single_type, single_type_rectangle, width_to_remove, is_double_type_with_tie, what_double_type, \
+    single_payoff_matrix
 from diff_array import how_many_rooks_permutations_in_W_single_area, how_many_rooks_permutations_in_W_double_area
 import concurrent.futures
 from utils import divides
@@ -12,7 +13,7 @@ import os
 from os import path
 from utils import MATRICES_PATH, MATRICES_RAPORTS_PATH
 
-class payoff_dynamic_finder():
+class payoff_dynamic_finder_more_than_half():
     def __init__(self):
         return
 
@@ -26,7 +27,7 @@ class payoff_dynamic_finder():
         self.W, self.T = single_payoff_matrix_vectors(A, B)
         self.knots = find_knots(self.W, self.T)
         self.m_constraints = find_m_constraints(self.knots, self.fields_number).astype(int)
-        self.x_max = np.max(max_rook_num(self.W))
+        self.x_max = max_rook_num(self.W)
         ## i, j, m, x order
         self.values = np.zeros((self.fields_number + 1, self.fields_number + 1, self.fields_number + 1, self.x_max + 1))
 
@@ -34,7 +35,7 @@ class payoff_dynamic_finder():
         assert (self.knots.shape) == (self.m_constraints.shape)
         for knot_index in range(self.knots.shape[0]):
             for m in range(self.m_constraints[knot_index, 0], self.m_constraints[knot_index, 1] + 1):
-                for x in range(self.x_max):
+                for x in range(self.x_max + 1):
                     i = self.knots[knot_index, 0]
                     j = self.knots[knot_index, 1]
                     self.values[i, j, m, x] = self.F(i, j, m, x)
@@ -50,8 +51,6 @@ class payoff_dynamic_finder():
         T_tmp = vector_min(self.T, j)[:i]
         if(max_rook_num(W_tmp) < x):
             return 0
-        # if(-max_rook_num(L_vector(W_tmp, T_tmp, j)) > x): bo badamy tylko rozstawienia w W
-        #     return 0
         if(is_single_type(W_tmp, T_tmp, j)):
             return how_many_rooks_permutations_in_W_single_area(i, j, m, x, what_single_type(W_tmp, T_tmp, j))
         if(W_tmp[-1] == j): ## corner is in W
@@ -148,9 +147,6 @@ class payoff_dynamic_finder():
                     matrix[i, j] = val
         return -matrix
 
-finder = payoff_dynamic_finder()
-print(finder.payoff_matrix(10,10,5))
-# print(finder.single_payoff(np.array([11,11,10,10,9,8,8,8,7,6,5,4,3,2,1]), np.array([11,11,10,10,9,8,8,8,8,5,5,5,2,2,0])))
 
 def payoff_matrix_pd(matrix, A, B, n):
     A_symmetrized_strategies = divides(A, n)
