@@ -99,7 +99,7 @@ class payoff_dynamic_finder_more_than_half():
         self.reload(A,B)
         self.run_experiment()
         wins = self.values[-1,-1,-1, int( (self.fields_number + 1) / 2):].sum()
-
+        # return i, j, wins
         self.rotate_clash_matrix()
         self.run_experiment()
         loses = self.values[-1,-1,-1, int( (self.fields_number + 1) / 2):].sum()
@@ -107,15 +107,24 @@ class payoff_dynamic_finder_more_than_half():
         number_of_permutations = single_type_rectangle(self.fields_number, self.fields_number, self.fields_number)
         return i, j, (wins - loses) / number_of_permutations
 
+    def print_values(self):
+        print("Węzły: ",  self.knots)
+        print("Warunki na M: ", self.m_constraints)
+        for knot_index in range(self.knots.shape[0]):
+            for m in range (self.m_constraints[knot_index][0], self.m_constraints[knot_index][1] + 1):
+                print("Numer węzła: ", knot_index, ", m(liczba wież): ", m );
+                # for x in range(self.x_max):
+                print(self.values[self.knots[knot_index][0], self.knots[knot_index][1], m]);
+
+
     def single_payoff(self, A, B):
         self.reload(A,B)
         self.run_experiment()
         wins = self.values[-1,-1,-1, int( (self.fields_number + 1) / 2):].sum()
-
         self.rotate_clash_matrix()
         self.run_experiment()
         loses = self.values[-1,-1,-1, int( (self.fields_number + 1) / 2):].sum()
-
+        self.print_values()
         number_of_permutations = single_type_rectangle(self.fields_number, self.fields_number, self.fields_number)
         return (wins - loses) / number_of_permutations
 
@@ -179,7 +188,7 @@ def check_if_matrix_exists(A,B,n):
 def find_and_save_matrix(A,B,n, threads_count=None):
     if(check_if_matrix_exists(A,B,n)):
        return
-    finder = payoff_dynamic_finder()
+    finder = payoff_dynamic_finder_more_than_half()
     start_time = time.time()
     payoff_mat_np = finder.payoff_matrix(A,B,n, threads_count)
     delta_time = time.time() - start_time
@@ -201,3 +210,14 @@ def save_raport(A,B,n,delta_time,threads_count):
         f.write(str(threads_count))
     f.close()
 
+# A = B = 5
+# n = 3
+# start = time.time()
+# finder = payoff_dynamic_finder_more_than_half()
+# mat = finder.payoff_matrix(A, B, n)
+# print(payoff_matrix_pd(mat, A,B,n))
+# # for i in range(mat.shape[0]):
+#     print(print(mat[i]))
+# print("Czas: ", time.time() - start)
+# print(finder.single_payoff(np.array([2,1,1,1,0]), np.array([3,2,0,0,0])))
+# print(single_payoff_matrix(np.array([2,1,1,1,0]), np.array([3,2,0,0,0])))
