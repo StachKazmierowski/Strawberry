@@ -19,7 +19,7 @@ for n in range(n_min, n_max + 1, 2):
         start = time.time()
         find_and_save_matrix(A, A, n, None, True)
         end = time.time()
-        if(end - start > 1):
+        if(end - start > 0.1):
             times[A][n] = (end - start)
             print("time = ", end - start)
             times.to_csv("../matrix_creation_times_dev/times_n=(" + str(n_min) + "," + str(n_max) + ")" +"_A=(" + str(A_MIN) + "," + str(A_MAX) + ").csv")
