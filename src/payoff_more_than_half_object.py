@@ -169,12 +169,13 @@ def payoff_matrix_pd(matrix, A, B, n):
     df = pd.DataFrame(matrix, columns=columns_names, index=rows_names)
     return df
 
-def save_matrix_pd(A, B, n, df):
+def save_matrix_pd(A, B, n, df, dev_run=False):
     dir_path = MATRICES_PATH + str(n) + "_fields"
     raport_path = MATRICES_RAPORTS_PATH + str(n) + "_fields"
     if(not path.exists(dir_path)):
         os.makedirs(dir_path)
-        os.makedirs(raport_path)
+        if not dev_run:
+            os.makedirs(raport_path)
     df.to_csv(MATRICES_PATH + str(n) + "_fields" + "/payoff_matrix(" + str(A) + "," + str(B) + "," + str(n) + ").csv")
     if(A != B):
         (-df.transpose()).to_csv(MATRICES_PATH + str(n) + "_fields" + "/payoff_matrix(" + str(B) + "," + str(A) + "," + str(n) + ").csv")
@@ -185,7 +186,7 @@ def check_if_matrix_exists(A,B,n):
         return False
     return True
 
-def find_and_save_matrix(A,B,n, threads_count=None):
+def find_and_save_matrix(A,B,n, threads_count=None, dev_run=False):
     if(check_if_matrix_exists(A,B,n)):
        return
     finder = payoff_dynamic_finder_more_than_half()
@@ -193,9 +194,10 @@ def find_and_save_matrix(A,B,n, threads_count=None):
     payoff_mat_np = finder.payoff_matrix(A,B,n, threads_count)
     delta_time = time.time() - start_time
     payoff_mat_pd = payoff_matrix_pd(payoff_mat_np, A,B,n)
-    save_matrix_pd(A,B,n,payoff_mat_pd)
-    save_raport(A,B,n,delta_time,threads_count)
-    save_raport(B,A,n,delta_time,threads_count)
+    save_matrix_pd(A,B,n,payoff_mat_pd, dev_run)
+    if not dev_run:
+        save_raport(A,B,n,delta_time,threads_count)
+        save_raport(B,A,n,delta_time,threads_count)
     return
 
 def save_raport(A,B,n,delta_time,threads_count):
