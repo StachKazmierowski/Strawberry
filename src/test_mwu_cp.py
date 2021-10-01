@@ -4,6 +4,7 @@ from solutions_evaluator import epsilon_value
 from utils import try_reading_matrix_numpy
 from mwu_without_time_hoop import MWU_game_algorithm
 import pandas as pd
+import sys
 
 EXPERIMENTS_RESULTS_PATH = "../experiments_results_cp/"
 
@@ -86,10 +87,7 @@ def save_experiments_results(data, name, folder=EXPERIMENTS_RESULTS_PATH):
 def gen_name(A, B, n):
     return "(" + str(A) + "," + str(B) + "," + str(n) + ").csv"
 
-# for n in range(15, 22, 2):
-#     print("new n: ", n)
-#     for A in range(15, 26):
-#         print("new A: ", A)
-#         run_experiment(A,A,n,10,13)
-
-run_experiment(15,15,9,4,6)
+if __name__ == "__main__":
+    args = sys.argv
+    A,B,n,phi,max_steps_power_mult = int(args[1]), int(args[2]), int(args[3]), int(args[4]), int(args[5])
+    run_experiment(A, B, n, phi, max_steps_power_mult)
