@@ -89,5 +89,9 @@ def gen_name(A, B, n):
 
 if __name__ == "__main__":
     args = sys.argv
-    A,B,n,phi,max_steps_power_mult = int(args[1]), int(args[2]), int(args[3]), int(args[4]), int(args[5])
-    run_experiment(A, B, n, phi, max_steps_power_mult)
+    A,phi,max_steps_power_mult,n = int(args[1]), int(args[2]), int(args[3]), int(args[4])
+    if(n == 15):
+        run_experiment(A, A, n, phi, max_steps_power_mult)
+    else:
+        for n in range(9,22,2):
+            run_experiment(A, A, n, phi, max_steps_power_mult)
