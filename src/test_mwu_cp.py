@@ -1,16 +1,16 @@
-import numpy as np
+import cupy as np
 import time
 from solutions_evaluator import epsilon_value
 from utils import try_reading_matrix_numpy
 from mwu_without_time_hoop import MWU_game_algorithm
 import pandas as pd
 
-EXPERIMENTS_RESULTS_PATH = "../experiments_results/"
+EXPERIMENTS_RESULTS_PATH = "../experiments_results_cp/"
 
-np.set_printoptions(suppress=True)
 SIGNIFICANCE_CONST = 10**(-50)
 
 def MWU_game_algorithm_experiment(payoff_mat, phi=1/2, steps_number=10000):
+    payoff_mat = np.array(payoff_mat)
     rows_number = payoff_mat.shape[0]
     cols_number = payoff_mat.shape[1]
     p_0 = np.ones((1, rows_number))
@@ -92,4 +92,4 @@ def gen_name(A, B, n):
 #         print("new A: ", A)
 #         run_experiment(A,A,n,10,13)
 
-run_experiment(25,25,21,10,13)
+run_experiment(15,15,9,4,6)
