@@ -1,6 +1,6 @@
-from mwu import MWU_game_algorithm
+from mwu_without_time_hoop import MWU_game_algorithm
 from solutions_evaluator import find_marginal_distribution, get_strategies, epsilon_value
-from payoff_object import find_and_save_matrix
+from payoff_more_than_half_object import find_and_save_matrix
 from utils import try_reading_matrix_numpy, RESULTS_PATH, PHI, STEPS_NUMBER
 import os
 from os import path
@@ -10,7 +10,7 @@ import sys
 
 
 def run_experiment(A,B,n,steps_number,phi):
-    payoff_mat = try_reading_matrix_numpy(A,B,n)
+    payoff_mat = -try_reading_matrix_numpy(A,B,n)
     start_time = time.time()
     results = MWU_game_algorithm(payoff_mat, phi, steps_number)
     delta_time = time.time() - start_time
@@ -42,21 +42,21 @@ def run_experiment(A,B,n,steps_number,phi):
     f.write(str(epsilon_B))
     f.close()
 
-    f = open(dir_path_precise + "/raport.txt", "w")
+    f = open(dir_path_precise + "/report.txt", "w")
     now = datetime.datetime.now()
-    f.write("Przybliżone równowagi wyznaczono: " + str(now) + "\n")
-    f.write("Parametry algorytmu:\n")
+    f.write("Ended solving at: " + str(now) + "\n")
+    f.write("Algorithm parameters:\n")
     f.write("STEPS_NUMBER = " + str(steps_number) + "\n")
     f.write("PHI = " + str(phi) + "\n")
-    f.write("Czas działania algorytmu: " + str(delta_time) + "s\n")
+    f.write("Runtime: " + str(delta_time) + "s\n")
     f.close()
 
 if __name__ == "__main__":
     args = sys.argv
     if(len(args) > 7 or len(args) < 4):
-        print("NIEPRAWIDŁOWA LICZBA ARGUMENTÓW")
-        print("Podaj nastąpujące trzy argumenty: zasoby_A, zasoby_B, liczba pól")
-        print("Możesz podać opcjonalnie następne trzy argumenty (domyślne wartości): liczba_kroków(10000), parametr_phi(1/8), liczba wątków przy obliczaniu macierzy (maksymalna)")
+        print("WRONG NUMBER OF ARGUMENTS")
+        print("You must input three arguments: resources_A, resources_B, battlefields number")
+        print("It is optional to input three more parameters(default values): steps_number(10000), parameter_phi(1/8), threads number used for finding payoff matrix (maximal)")
     else:
         A,B,n = int(args[1]), int(args[2]), int(args[3])
         if (len(args) > 4):

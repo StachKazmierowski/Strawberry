@@ -98,5 +98,3 @@ def payoff_matrix_more_than_opponent_pd(A, B, n):
 
 # print(payoff_matrix_more_than_half_pd(10, 10, 4))
 # print(payoff_matrix_more_than_opponent_pd(10, 10, 4))
-
-
