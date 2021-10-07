@@ -201,11 +201,11 @@ def find_and_save_matrix(A,B,n, threads_count=None, dev_run=False):
     return
 
 def save_raport(A,B,n,delta_time,threads_count):
-    f = open(MATRICES_RAPORTS_PATH + str(n) + "_fields/" + "payoff_matrix_raport(" + str(B) + "," + str(A) + "," + str(n) + ").txt", "w")
+    f = open(MATRICES_RAPORTS_PATH + str(n) + "_fields/" + "payoff_matrix_report(" + str(B) + "," + str(A) + "," + str(n) + ").txt", "w")
     now = datetime.datetime.now()
-    f.write("Macierz obliczono: " + str(now) + "\n")
-    f.write("Czas obliczania: " + str(delta_time) + "s\n")
-    f.write("Liczba użytych wątków: ")
+    f.write("Matrix found at: " + str(now) + "\n")
+    f.write("Algorithm runtime: " + str(delta_time) + "s\n")
+    f.write("Numbers of threads: ")
     if(threads_count==None):
         f.write("domyślna (nie podano)")
     else:

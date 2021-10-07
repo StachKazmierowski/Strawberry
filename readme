@@ -1,24 +1,24 @@
-Program wywołujemy następującym poleceniem:
+We run program with following command
 python3 main.py $troopsANo $troopsBNo $battlefieldsNo $steps_number $phi $threads_number
-Pierwsze trzy parametry są konieczne, kolejne trzy opcjonalne (domyślne wartości można zmienić w pliku src/utils.py)
+First three parameters are necessary, next three are optional (default values can be found in src/utils.py)
 
-Skrypt run.sh jest przykładowym skryptem do wywoływania programu dla kolejnych wartości.
+Script run.sh is an example of script used to run program for many values.
 
-Program po uruchomieniu sprawdza, czy odpowiedniej macierzy wypłat nie ma już zapisanej w pamieci ( w katalogu payoff_matrices).
-Jeżeli tak jest, program wczytuje macierz i z niej korzysta. Wpp. oblicza macierz, zapisuje i przechodzi do algorytmu MWU.
+After starting, the program checks if payoff matrix for this model was already found (in /payoff_matrices).
+If so, it reads payoff matrix from memory and uses it. Otherwise it first finds the matrix, than pass to the MWU algorithm.
 
-W wyniku działania programu powstają:
-payoff_matrix($A,$B,$n).csv - plik z macierzą wypłat
-payoff_matrix_raport($A,$B,$n).csv - plik z informacjami o generowaniu macierzy wypłat (kiedy, iloma rdzeniami i jak długo)
-results($A,$B,$n) - katalog z wynikami algorytmu, a w nim (dla $x w {A,B} oznaczającym gracza):
-	$x_value - wartość gry dla gracza $x
-	$x_strategy.csv - znaleziona strategia gracza $x
-	$x_marginal_distribution - rozkład brzegowy znalezionej strategii gracza $x
-	$x_epsilon_value.txt - o ile mogłaby wzrosnąć wypłąta gracza $x
-	raport.txt - raport z działania algorytmu (kiedy, jaki czas działania i parametry)
+The output of program are following files:
+payoff_matrix($A,$B,$n).csv - file with payoff matrix (pandas)
+payoff_matrix_report($A,$B,$n).csv - file with information about payoff matrix generation (when, with hom many threads, how long)
+results($A,$B,$n) - directory with algorithm results, containing ($x in {A,B} means the player):
+	$x_value - game value for $x player
+	$x_strategy.csv - found strategy of $x player
+	$x_marginal_distribution - marginal distribution of found strategy of player $x
+	$x_epsilon_value.txt - epsilon value (how much could player $x increase his payoff without changing strategy of the other player)
+	report.txt - report from running algorithm (when, how long, what parameters)
 
 
-Potrzebne biblioteki:
+Required libraries:
 numpy, pandas, time, datetime, os, concurrent.futures, math, scipy.special, sys
-Polecenie instalujące:
+Installing command:
 pip3 install numpy, pandas, time, datetime, os, concurrent.futures, math, scipy.special, sys

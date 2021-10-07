@@ -1,4 +1,4 @@
-from mwu_without_time_hoop import MWU_game_algorithm
+from mwu import MWU_game_algorithm
 from solutions_evaluator import find_marginal_distribution, get_strategies, epsilon_value
 from payoff_more_than_half_object import find_and_save_matrix
 from utils import try_reading_matrix_numpy, RESULTS_PATH, PHI, STEPS_NUMBER
