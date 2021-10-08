@@ -30,4 +30,4 @@ where XXX is cuda version
 and run program with adding "GPU" as first argument as shown below:
 python3 main.py GPU $troopsANo $troopsBNo $battlefieldsNo $steps_number $phi $threads_number
 **keep in mind, that for big instances of the game (ones that it is interesting to use CUDA with),
-finding the payoff matrix can take a very long time (~14 hours on computational cluster for 30 resources each player, 15 fields)
+finding the payoff matrix can take a very long time (~14 hours on computational cluster for 30 resources each player, 15 battlefields)
