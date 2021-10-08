@@ -22,3 +22,10 @@ Required libraries:
 numpy, pandas, time, datetime, os, concurrent.futures, math, scipy.special, sys
 Installing command:
 pip3 install numpy, pandas, time, datetime, os, concurrent.futures, math, scipy.special, sys
+
+USING GPU
+To use GPU implementation, CUDA is required. Install appropriate cupy version with command:
+pip3 install cupyXXX
+where XXX is cuda version
+and run program with adding "GPU" as first argument as shown below:
+python3 main.py GPU $troopsANo $troopsBNo $battlefieldsNo $steps_number $phi $threads_number

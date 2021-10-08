@@ -1,15 +1,16 @@
-from mwu import MWU_game_algorithm
 from solutions_evaluator import find_marginal_distribution, get_strategies, epsilon_value
 from payoff_more_than_half_object import find_and_save_matrix
 from utils import try_reading_matrix_numpy, RESULTS_PATH, PHI, STEPS_NUMBER
 import os
 from os import path
 import datetime
+import numpy as np
+import cupy as cp
 import time
 import sys
 
 
-def run_experiment(A,B,n,steps_number,phi):
+def run_experiment(A,B,n,steps_number,phi,using_gpu):
     payoff_mat = -try_reading_matrix_numpy(A,B,n)
     start_time = time.time()
     results = MWU_game_algorithm(payoff_mat, phi, steps_number)
@@ -17,6 +18,8 @@ def run_experiment(A,B,n,steps_number,phi):
     marginal_distribution_A, marginal_distribution_B = find_marginal_distribution(A,n,results[0]), find_marginal_distribution(B,n,results[1])
     game_value_A, game_value_B = results[2], results[3]
     strategy_A, strategy_B = get_strategies(A,B,n,results)
+    if(using_gpu):
+        payoff_mat = cp.array(payoff_mat)
     epsilon_A, epsilon_B = epsilon_value(results[0], results[1], payoff_mat)
     dir_path_fields = RESULTS_PATH + str(n) + "_fields"
     dir_path_precise = dir_path_fields + "/results" + "(" + str(A) + "," + str(B) + "," + str(n) + ")"
@@ -49,10 +52,25 @@ def run_experiment(A,B,n,steps_number,phi):
     f.write("STEPS_NUMBER = " + str(steps_number) + "\n")
     f.write("PHI = " + str(phi) + "\n")
     f.write("Runtime: " + str(delta_time) + "s\n")
+    if(using_gpu):
+        f.write("Solved using GPU\n")
+    else:
+        f.write("Solved using CPU\n")
     f.close()
 
 if __name__ == "__main__":
     args = sys.argv
+    if(args[1] == "GPU"):
+        new_args = []
+        new_args.append(args[0])
+        for i in range (2, len(args)):
+            new_args.append(args[i])
+        args = new_args
+        from mwu_cp import MWU_game_algorithm
+        using_gpu = True
+    else:
+        from mwu import MWU_game_algorithm
+        using_gpu = False
     if(len(args) > 7 or len(args) < 4):
         print("WRONG NUMBER OF ARGUMENTS")
         print("You must input three arguments: resources_A, resources_B, battlefields number")
@@ -72,4 +90,4 @@ if __name__ == "__main__":
         else:
             threads_num = None
         find_and_save_matrix(A, B, n, threads_num)
-        run_experiment(A,B,n,steps_number,phi)
+        run_experiment(A,B,n,steps_number,phi,using_gpu)
