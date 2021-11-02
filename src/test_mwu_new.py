@@ -1,5 +1,6 @@
 import math
 import numpy as np
+import pandas as pd
 from utils import try_reading_matrix_numpy
 from solutions_evaluator import epsilon_value
 import time
@@ -7,6 +8,8 @@ np.set_printoptions(suppress=True)
 from mwu import MWU_game_algorithm as MWU_basic
 # from mwu_without_time_hoop import SIGNIFICANCE_CONST
 SIGNIFICANCE_CONST = 10**(-20)
+import sys
+EXPERIMENTS_RESULTS_PATH = "../experiments_results_small_support**2/"
 
 def MWU_game_algorithm(payoff_mat, phi=1/2, steps_number=10000):
     rows_number = payoff_mat.shape[0]
@@ -18,6 +21,7 @@ def MWU_game_algorithm(payoff_mat, phi=1/2, steps_number=10000):
     smallest_column_payoff = 1
     p_best = p_t
     best_indexes = indexes
+    start = time.time()
     # p_t_sum = np.zeros((1, rows_number))
     k = 1
     tmp_mat = payoff_mat[indexes,:]
@@ -57,7 +61,11 @@ def MWU_game_algorithm(payoff_mat, phi=1/2, steps_number=10000):
         p_t = p_t/p_t.sum()
     p_best = translate_p_t(p_best, best_indexes, rows_number)
     game_value = np.matmul(np.matmul(p_best, payoff_mat), j_distribution)[0][0]
-    return p_best, j_distribution, -game_value, game_value
+    row_row = max(epsilon_value(p_best, np.transpose(p_best), payoff_mat))
+    col_col = max(epsilon_value(np.transpose(j_distribution), j_distribution, payoff_mat))
+    row_col = (max(epsilon_value(p_best, j_distribution, payoff_mat)))
+    duration = time.time() - start
+    return duration, row_row, row_col, col_col
 
 def translate_p_t(p_t, indexes, rows_num):
     result = np.zeros((1, rows_num))
@@ -104,17 +112,59 @@ def start_vector(matrix, rows_number, columns_number):
 def poly_size(number):
     return int(math.log(number) ** 2)
 
-A, B, n = 20, 20, 11
-num_steps = 102400
-phi = (1/2)**6
-matrix = -try_reading_matrix_numpy(A, B, n)
-start = time.time()
+def run_experiment(A, B, n, phis_bound, max_steps_power_mult):
+    max_steps = 125 * 2 ** max_steps_power_mult
+    matrix = -try_reading_matrix_numpy(A,B,n)
+
+    times = []
+    row_row = []
+    col_col = []
+    row_col = []
+
+    phis = [(1/2)**i for i in range(1, phis_bound+1)]
+    columns_names = [125 * 2**i for i in range(max_steps_power_mult + 1)]
+    for phi in phis:
+        times_tmp = []
+        row_row_tmp = []
+        col_col_tmp = []
+        row_col_tmp = []
+        for column_number in columns_names:
+            result = MWU_game_algorithm(matrix, phi, column_number)
+            times_tmp.append(result[0])
+            row_row_tmp.append(result[1])
+            col_col_tmp.append(result[2])
+            row_col_tmp.append(result[3])
+        times.append(times_tmp)
+        row_row.append(row_row_tmp)
+        col_col.append(col_col_tmp)
+        row_col.append(row_col_tmp)
+    save_experiments_results(pd.DataFrame(np.array(times), index=phis, columns=columns_names), gen_name(A, B, n), EXPERIMENTS_RESULTS_PATH + "/times/")
+    save_experiments_results(pd.DataFrame(np.array(row_row), index=phis, columns=columns_names), gen_name(A, B, n), EXPERIMENTS_RESULTS_PATH + "/row_row/")
+    save_experiments_results(pd.DataFrame(np.array(col_col), index=phis, columns=columns_names), gen_name(A, B, n), EXPERIMENTS_RESULTS_PATH + "/col_col/")
+    save_experiments_results(pd.DataFrame(np.array(row_col), index=phis, columns=columns_names), gen_name(A, B, n), EXPERIMENTS_RESULTS_PATH + "/row_col/")
+
+def save_experiments_results(data, name, folder=EXPERIMENTS_RESULTS_PATH):
+    data.to_csv(folder + name)
+
+def gen_name(A, B, n):
+    return "(" + str(A) + "," + str(B) + "," + str(n) + ").csv"
+
+if __name__ == "__main__":
+    args = sys.argv
+    A,n,phi,max_steps_power_mult = int(args[1]), int(args[2]), int(args[3]), int(args[4])
+    run_experiment(A, A, n, phi, max_steps_power_mult)
+
+# A, B, n = 30, 30, 15
+# num_steps = 1024000
+# phi = (1/2)**6
+# matrix = -try_reading_matrix_numpy(A, B, n)
+# start = time.time()
 # print(best_pure_responses_indexes(matrix, normalize(np.ones((matrix.shape[0], 1)))))
 # print(worst_pure_responses_indexes(matrix, normalize(np.ones((matrix.shape[0], 1)))))
 # print(start_vector(matrix, matrix.shape[0], matrix.shape[1]))
-result = MWU_game_algorithm(matrix, phi, num_steps)
-
-print(time.time() - start)
-print(epsilon_value(result[0], result[1], matrix))
+# result = MWU_game_algorithm(matrix, phi, num_steps)
 #
+# print(time.time() - start)
+# print(epsilon_value(result[0], result[1], matrix))
+
 # print(poly_size(matrix.shape[0]))
